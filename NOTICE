@@ -1,0 +1,13 @@
+Refractor Optical Glass UI Framework for Rust (refractor-ui-rust)
+Copyright 2026 Refractor UI Contributors
+
+This product is a native Rust port and GPU-accelerated UI framework combining:
+- Refractor Optical Glass UI Kit (https://github.com/SourceCode/glass-ui-v1)
+- Zed GPUI (https://github.com/zed-industries/zed/tree/main/crates/gpui)
+- Architectural inspiration from Iced (https://github.com/iced-rs/iced)
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0

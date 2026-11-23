@@ -1,0 +1,62 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/refractor-security",
+    "crates/refractor-tokens",
+    "crates/refractor-themes",
+    "crates/refractor-core",
+    "crates/refractor-components",
+    "crates/refractor-cli",
+    "crates/refractor-xtask",
+    "apps/workbench",
+    "apps/studio-showcase",
+    "apps/task-manager",
+]
+
+[workspace.package]
+version = "1.0.0"
+edition = "2024"
+rust-version = "1.88"
+license = "Apache-2.0"
+repository = "https://github.com/SourceCode/refractor-ui-rust"
+homepage = "https://sourcecode.github.io/refractor-ui-rust/"
+authors = ["Refractor UI Contributors"]
+keywords = ["gui", "ui", "gpui", "desktop", "optical-glass"]
+categories = ["gui", "rendering::graphics-api"]
+
+[workspace.dependencies]
+gpui = "0.2.2"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+toml = "0.8"
+
+refractor-security = { path = "crates/refractor-security", version = "1.0.0" }
+refractor-tokens = { path = "crates/refractor-tokens", version = "1.0.0" }
+refractor-themes = { path = "crates/refractor-themes", version = "1.0.0" }
+refractor-core = { path = "crates/refractor-core", version = "1.0.0" }
+refractor-components = { path = "crates/refractor-components", version = "1.0.0" }
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_debug_implementations = "warn"
+rust_2018_idioms = { level = "warn", priority = -1 }
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+todo = "deny"
+unimplemented = "deny"
+module_name_repetitions = "allow"
+must_use_candidate = "allow"
+return_self_not_must_use = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+too_many_lines = "allow"
+struct_excessive_bools = "allow"
+cast_possible_truncation = "allow"
+cast_sign_loss = "allow"
+cast_precision_loss = "allow"
+cast_lossless = "allow"

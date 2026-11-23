@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="alabaster">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Refractor UI for Rust — Optical Glass & Multi-Material GPUI Framework</title>
+  <meta name="description" content="Native GPU-accelerated Rust desktop UI framework built on Zed's GPUI with Iced-inspired ergonomics, 314 components across 55 categories, 68 themes, 13 materials, and 9 GPU FX overlays." />
+  <style>
+    :root {
+      --bg-start: #f3f5f8;
+      --bg-end: #dfe6f1;
+      --text-primary: #18202c;
+      --text-secondary: #4b586c;
+      --primary-top: #d44a18;
+      --primary-main: #e75c24;
+      --primary-light: #f59c28;
+      --primary-contrast: #ffffff;
+      --secondary-rgb: 56, 189, 248;
+      --primary-rgb: 231, 92, 36;
+      --slab-bg: linear-gradient(180deg, rgba(247, 250, 254, 0.86) 0%, rgba(227, 235, 246, 0.78) 100%);
+      --crystal-bg: linear-gradient(180deg, rgba(242, 247, 254, 0.92) 0%, rgba(212, 228, 248, 0.84) 100%);
+      --well-bg: linear-gradient(180deg, rgba(235, 240, 248, 0.95) 0%, rgba(249, 251, 254, 0.98) 100%);
+      --border: rgba(122, 138, 162, 0.34);
+      --radius-slab: 24px;
+      --radius-btn: 9999px;
+      --shadow-slab: 0 18px 34px -12px rgba(15, 23, 42, 0.18), 8px 12px 20px -10px rgba(245, 156, 40, 0.24);
+      --specular: 1;
+    }
+
+    [data-theme="obsidian"] {
+      --bg-start: #0d121a;
+      --bg-end: #0b1017;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --slab-bg: linear-gradient(180deg, rgba(28, 38, 54, 0.88) 0%, rgba(17, 24, 36, 0.86) 100%);
+      --crystal-bg: linear-gradient(180deg, rgba(38, 52, 74, 0.90) 0%, rgba(22, 32, 48, 0.88) 100%);
+      --well-bg: linear-gradient(180deg, rgba(13, 19, 29, 0.94) 0%, rgba(20, 28, 41, 0.96) 100%);
+      --border: rgba(148, 163, 184, 0.26);
+      --shadow-slab: 0 18px 36px -10px rgba(0, 0, 0, 0.62);
+    }
+
+    [data-theme="amethyst"] {
+      --bg-start: #181028;
+      --bg-end: #0f0a1d;
+      --text-primary: #f5f3ff;
+      --text-secondary: #c4b5fd;
+      --primary-top: #7c3aed;
+      --primary-main: #9333ea;
+      --primary-light: #c084fc;
+      --primary-rgb: 147, 51, 234;
+      --secondary-rgb: 232, 121, 249;
+      --slab-bg: linear-gradient(180deg, rgba(42, 28, 72, 0.84) 0%, rgba(26, 17, 46, 0.84) 100%);
+      --crystal-bg: linear-gradient(180deg, rgba(58, 38, 96, 0.86) 0%, rgba(36, 24, 64, 0.86) 100%);
+      --well-bg: linear-gradient(180deg, rgba(19, 12, 34, 0.94) 0%, rgba(28, 18, 48, 0.96) 100%);
+      --border: rgba(196, 181, 253, 0.30);
+      --shadow-slab: 0 18px 36px -10px rgba(0, 0, 0, 0.62), 0 0 24px rgba(147, 51, 234, 0.22);
+    }
+
+    [data-theme="cyberpunk"] {
+      --bg-start: #090614;
+      --bg-end: #120824;
+      --text-primary: #f8fafc;
+      --text-secondary: #67e8f9;
+      --primary-top: #ec4899;
+      --primary-main: #f43f5e;
+      --primary-light: #fb7185;
+      --primary-rgb: 244, 63, 94;
+      --secondary-rgb: 34, 211, 238;
+      --slab-bg: linear-gradient(180deg, rgba(18, 12, 38, 0.90) 0%, rgba(12, 8, 28, 0.92) 100%);
+      --crystal-bg: linear-gradient(180deg, rgba(28, 18, 56, 0.92) 0%, rgba(16, 10, 36, 0.92) 100%);
+      --well-bg: #080514;
+      --border: rgba(34, 211, 238, 0.55);
+      --radius-slab: 10px;
+      --radius-btn: 8px;
+      --shadow-slab: 0 0 22px rgba(34, 211, 238, 0.25), 0 14px 28px rgba(0, 0, 0, 0.65);
+    }
+
+    [data-theme="windows95"] {
+      --bg-start: #008080;
+      --bg-end: #007575;
+      --text-primary: #111111;
+      --text-secondary: #333333;
+      --primary-top: #000080;
+      --primary-main: #000080;
+      --primary-light: #0000a8;
+      --primary-rgb: 0, 0, 128;
+      --slab-bg: #c0c0c0;
+      --crystal-bg: #c0c0c0;
+      --well-bg: #ffffff;
+      --border: #404040;
+      --radius-slab: 0px;
+      --radius-btn: 0px;
+      --shadow-slab: inset 2px 2px 0 #ffffff, inset -2px -2px 0 #555555, 3px 3px 0 rgba(0,0,0,0.3);
+      --specular: 0;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text-primary);
+      background: linear-gradient(148deg, var(--bg-start) 0%, var(--bg-end) 100%);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    body::before, body::after {
+      content: "";
+      position: fixed;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(90px);
+      opacity: 0.22;
+    }
+    body::before {
+      width: 460px; height: 460px; top: -140px; left: -100px;
+      background: rgb(var(--secondary-rgb));
+    }
+    body::after {
+      width: 480px; height: 480px; bottom: -160px; right: -100px;
+      background: rgb(var(--primary-rgb));
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 24px 64px;
+    }
+
+    .slab {
+      background: var(--slab-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-slab);
+      box-shadow: var(--shadow-slab);
+      backdrop-filter: blur(20px) saturate(170%);
+      padding: 24px;
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      padding: 14px 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.01em;
+    }
+
+    .brand-icon {
+      width: 28px; height: 28px; border-radius: 8px;
+      display: grid; place-items: center;
+      color: #fff; font-weight: 800; font-size: 14px;
+      background: linear-gradient(180deg, var(--primary-top) 0%, var(--primary-light) 100%);
+      box-shadow: 0 6px 14px -4px rgba(var(--primary-rgb), 0.5);
+    }
+
+    .btn-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+
+    .btn-primary, .btn-secondary {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: var(--radius-btn);
+      cursor: pointer;
+      border: 1px solid var(--border);
+      transition: transform 140ms ease, opacity 140ms ease;
+    }
+    .btn-sm { padding: 7px 14px; font-size: 12.5px; }
+
+    .btn-primary {
+      color: var(--primary-contrast);
+      background: linear-gradient(180deg, var(--primary-top) 0%, var(--primary-main) 52%, var(--primary-light) 100%);
+      border-color: rgba(255, 255, 255, 0.35);
+      box-shadow:
+        inset 0 1.5px 1px rgba(255, 255, 255, calc(0.75 * var(--specular))),
+        0 10px 20px -6px rgba(var(--primary-rgb), 0.45);
+    }
+    .btn-primary:hover { transform: translateY(-1px); }
+
+    .btn-secondary {
+      color: var(--text-primary);
+      background: var(--crystal-bg);
+      box-shadow: inset 0 1.5px 1px rgba(255, 255, 255, calc(0.8 * var(--specular))), 0 8px 16px -8px rgba(15, 23, 42, 0.18);
+    }
+    .btn-secondary:hover { transform: translateY(-1px); }
+
+    .hero {
+      padding: 36px 32px;
+      margin-bottom: 24px;
+    }
+    .kicker {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--primary-main);
+      margin-bottom: 8px;
+    }
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.15;
+      letter-spacing: -0.025em;
+    }
+    .lead {
+      margin: 0 0 22px;
+      max-width: 760px;
+      font-size: 16px;
+      color: var(--text-secondary);
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .kpi-value { font-size: 30px; font-weight: 800; letter-spacing: -0.02em; margin: 4px 0; }
+    .kpi-label { font-size: 12.5px; color: var(--text-secondary); font-weight: 600; }
+    .kpi-delta { font-size: 12px; color: #159673; font-weight: 600; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    h2 { margin: 0 0 12px; font-size: 20px; letter-spacing: -0.015em; }
+    h3 { margin: 0 0 6px; font-size: 15px; }
+    p { margin: 0 0 10px; color: var(--text-secondary); font-size: 14px; }
+
+    .well {
+      background: var(--well-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 16px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+      font-size: 12.5px;
+      overflow-x: auto;
+      white-space: pre;
+      color: var(--text-primary);
+    }
+
+    .chip-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11.5px;
+      font-weight: 600;
+      background: var(--crystal-bg);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-secondary);
+      padding-top: 12px;
+    }
+    footer a { color: var(--primary-main); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="slab nav">
+      <div class="brand">
+        <div class="brand-icon">R</div>
+        <span>Refractor UI for Rust <span style="opacity:0.65;font-weight:500;">v1.0.0</span></span>
+      </div>
+      <div class="btn-row" role="group" aria-label="Live theme preview">
+        <button class="btn-primary btn-sm" data-set-theme="alabaster">Alabaster</button>
+        <button class="btn-secondary btn-sm" data-set-theme="obsidian">Obsidian</button>
+        <button class="btn-secondary btn-sm" data-set-theme="amethyst">Amethyst</button>
+        <button class="btn-secondary btn-sm" data-set-theme="windows95">Win95 Bevel</button>
+        <button class="btn-secondary btn-sm" data-set-theme="cyberpunk">Cyberpunk</button>
+      </div>
+    </header>
+
+    <section class="slab hero">
+      <div class="kicker">Native GPUI • Iced Ergonomics • Astryx Open-Internals</div>
+      <h1>Optical Glass &amp; Multi-Material Desktop UI Framework for Rust</h1>
+      <p class="lead">
+        100% native, GPU-accelerated Rust desktop UI kit combining the Refractor Optical Glass visual language,
+        Zed's <strong>GPUI</strong> rendering engine, and Iced-inspired declarative application architecture —
+        with <strong>314 components</strong>, <strong>68 themes</strong>, <strong>13 material archetypes</strong>,
+        <strong>9 GPU FX overlays</strong>, and strict <code>#![forbid(unsafe_code)]</code> governance.
+      </p>
+      <div class="btn-row">
+        <a class="btn-primary" href="https://github.com/SourceCode/refractor-ui-rust">View on GitHub</a>
+        <a class="btn-secondary" href="https://github.com/SourceCode/refractor-ui-rust/releases/tag/v1.0.0">Release v1.0.0</a>
+        <a class="btn-secondary" href="https://github.com/SourceCode/refractor-ui-rust/tree/main/docs/adr">Read ADRs (0001–0006)</a>
+      </div>
+    </section>
+
+    <section class="kpi-grid">
+      <div class="slab">
+        <div class="kpi-label">Native GPUI Components</div>
+        <div class="kpi-value">314</div>
+        <div class="kpi-delta">55 Categories • 7 Bespoke Suites</div>
+      </div>
+      <div class="slab">
+        <div class="kpi-label">Multi-Material Themes</div>
+        <div class="kpi-value">68</div>
+        <div class="kpi-delta">13 Materials • 9 GPU FX Overlays</div>
+      </div>
+      <div class="slab">
+        <div class="kpi-label">Desktop Sample Apps</div>
+        <div class="kpi-value">3</div>
+        <div class="kpi-delta">Task Manager • Workbench • Studio</div>
+      </div>
+      <div class="slab">
+        <div class="kpi-label">Safety &amp; Security Gate</div>
+        <div class="kpi-value">0 unsafe</div>
+        <div class="kpi-delta">ADR-0002 &amp; ADR-0005 Verified</div>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <div class="slab">
+        <div class="kicker">Concentric GPU SDF Engine</div>
+        <h2>13 Materials &amp; 9 GPU FX Overlays</h2>
+        <p>
+          Every surface renders via hardware-accelerated <code>gpui::linear_gradient</code> fills,
+          runtime-exact concentric SDF specular arcs and inner rims, dual-direction neumorphic
+          extrusions, 3D bevels, recessed wells, and atmospheric <code>OpticalBackdrop</code> caustic blooms.
+        </p>
+        <div class="chip-list">
+          <span class="chip">glass</span><span class="chip">mica</span><span class="chip">bevel</span>
+          <span class="chip">brutalist</span><span class="chip">neon</span><span class="chip">crt</span>
+          <span class="chip">neumorphic</span><span class="chip">clay</span><span class="chip">paper</span>
+          <span class="chip">flat</span><span class="chip">chrome</span><span class="chip">pixel</span>
+          <span class="chip">resin</span>
+        </div>
+      </div>
+
+      <div class="slab">
+        <div class="kicker">Quick Start</div>
+        <h2>Run Locally in Seconds</h2>
+        <div class="well">git clone https://github.com/SourceCode/refractor-ui-rust.git
+cd refractor-ui-rust
+
+# Launch interactive Optical Glass Task Manager
+cargo run -p refractor-task-manager
+
+# Launch 68-Theme Optical Workbench
+cargo run -p refractor-workbench
+
+# Launch 7-Suite Studio Showcase
+cargo run -p refractor-studio-showcase
+
+# Verify full safety, clippy, and test suite
+cargo clippy --workspace --all-targets -- -D warnings
+cargo test --workspace
+cargo run -p refractor-xtask -- check-repo</div>
+      </div>
+    </section>
+
+    <section class="grid-2">
+      <div class="slab">
+        <div class="kicker">Workspace Crates</div>
+        <h2>Modular Cargo Architecture</h2>
+        <p><strong>refractor-security</strong> — Zero-dep URL, HTML, OWASP CSV, NaN/Inf, ReDoS-safe highlight &amp; swizzle guards.</p>
+        <p><strong>refractor-tokens</strong> — Pure Rust WCAG 2.2 AA contrast derivation, <code>create_prism_theme</code> &amp; <code>define_theme</code>.</p>
+        <p><strong>refractor-themes</strong> — 5 Optical Glass presets + 63 WebOS-v3 themes across 9 collections.</p>
+        <p><strong>refractor-core</strong> — GPUI <code>ThemeGlobal</code>, concentric SDF <code>optical_surface</code>, <code>OpticalBackdrop</code>, <code>FxOverlay</code> &amp; <code>RefractorApp</code>.</p>
+        <p><strong>refractor-components</strong> — 314 typed <code>RenderOnce</code> GPUI components including horizontal <code>MenuBarTrigger</code>/<code>MenuDropdownItem</code> &amp; <code>WindowTitlebar</code>.</p>
+        <p><strong>refractor-cli &amp; refractor-xtask</strong> — Component discovery, swizzling, and ADR/SemVer drift verification.</p>
+      </div>
+
+      <div class="slab">
+        <div class="kicker">Desktop Native Polish</div>
+        <h2>Built for Real Desktop Applications</h2>
+        <p><strong>Horizontal Menu System:</strong> Top-of-window optical-glass menu bar (<code>File</code>, <code>Edit</code>, <code>View</code>, <code>Theme</code>, <code>Help</code>) with floating dropdown panels, checkmarks, and keyboard shortcuts.</p>
+        <p><strong>Native OS App Icons:</strong> Zero-dependency Windows <code>build.rs</code> Resource ID <code>1</code> embedding so GPUI automatically displays your <code>.ico</code> on the taskbar, Alt-Tab, Explorer, and titlebar.</p>
+        <p><strong>Live Visual FX Studio:</strong> Real-time controls for Refraction Intensity, Specular Highlights, Caustic Blooms, Corner Radii, Material Archetypes, and Overlay Intensity.</p>
+      </div>
+    </section>
+
+    <footer>
+      Apache License 2.0 • <a href="https://github.com/SourceCode/refractor-ui-rust">SourceCode/refractor-ui-rust</a> • Built with Rust &amp; Zed GPUI
+    </footer>
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('[data-set-theme]');
+    buttons.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const theme = btn.getAttribute('data-set-theme');
+        document.documentElement.setAttribute('data-theme', theme);
+        buttons.forEach((b) => {
+          const active = b === btn;
+          b.classList.toggle('btn-primary', active);
+          b.classList.toggle('btn-secondary', !active);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

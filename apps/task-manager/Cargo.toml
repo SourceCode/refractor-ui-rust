@@ -1,0 +1,21 @@
+[package]
+name = "refractor-task-manager"
+description = "Interactive GPUI Optical Glass Task Manager built with Refractor UI for Rust"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+
+[dependencies]
+gpui.workspace = true
+refractor-components.workspace = true
+refractor-core.workspace = true
+refractor-security.workspace = true
+refractor-themes.workspace = true
+refractor-tokens.workspace = true
+
+[lints]
+workspace = true

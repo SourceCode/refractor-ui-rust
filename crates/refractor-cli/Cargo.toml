@@ -1,0 +1,23 @@
+[package]
+name = "refractor-cli"
+description = "Agent-ready CLI for Refractor UI for Rust (docs, component, theme, swizzle, check)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+
+[[bin]]
+name = "refractor"
+path = "src/main.rs"
+
+[dependencies]
+refractor-components.workspace = true
+refractor-security.workspace = true
+refractor-themes.workspace = true
+refractor-tokens.workspace = true
+
+[lints]
+workspace = true

@@ -1,0 +1,20 @@
+[package]
+name = "refractor-core"
+description = "GPUI-accelerated optical surface renderer, Astryx Open-Internals contracts, and Iced-inspired application runtime for Refractor UI"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+
+[dependencies]
+gpui.workspace = true
+refractor-security.workspace = true
+refractor-tokens.workspace = true
+refractor-themes.workspace = true
+serde.workspace = true
+
+[lints]
+workspace = true

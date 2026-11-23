@@ -1,0 +1,20 @@
+[package]
+name = "refractor-studio-showcase"
+description = "Multi-suite native GPUI Desktop Application showcasing all 7 bespoke component domain suites across 68 themes"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+
+[dependencies]
+gpui.workspace = true
+refractor-components.workspace = true
+refractor-core.workspace = true
+refractor-themes.workspace = true
+refractor-tokens.workspace = true
+
+[lints]
+workspace = true

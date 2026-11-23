@@ -1,0 +1,17 @@
+[package]
+name = "refractor-tokens"
+description = "Pure Rust color math, WCAG 2.2 AA derivation, and dual MUI + Astryx multi-material theme engine for Refractor UI"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+
+[dependencies]
+refractor-security.workspace = true
+serde.workspace = true
+
+[lints]
+workspace = true
