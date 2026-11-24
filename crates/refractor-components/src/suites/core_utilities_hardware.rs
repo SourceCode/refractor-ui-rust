@@ -190,7 +190,7 @@ bespoke_util_widget!(VirtualizedList, "Virtualized List", "100k Rows", "Windowed
 bespoke_util_widget!(AvatarStack, "Avatar Stack", "+5", "RR • AL • MK • +5", MobileBar);
 bespoke_util_widget!(ExpandableTextClamp, "Expandable Text Clamp", "2 Lines", "Refractor combines GPUI + Iced ergonomics...", MicroUtility);
 bespoke_util_widget!(InlineCopyTrigger, "Inline Copy Trigger", "Copy", "cargo add refractor-components", MicroUtility);
-bespoke_util_widget!(MarqueeTicker, "Marquee Ticker", "Live", "GPUI 0.2.2 • 314 Components • 68 Themes", MicroUtility);
+bespoke_util_widget!(MarqueeTicker, "Marquee Ticker", "Live", "GPUI 0.2.2 • 314 Components • 67 Themes", MicroUtility);
 bespoke_util_widget!(PropertyGrid, "Property Grid", "Key/Val", "blur_px: 18.0 • material: glass", DisplayList);
 bespoke_util_widget!(ScrollShadowArea, "Scroll Shadow Area", "Scroll", "Edge-faded optical scroll container", MicroUtility);
 bespoke_util_widget!(ShortcutCheatSheet, "Shortcut Cheat Sheet", "Keys", "⌘K Palette • ⌘T Cycle Theme", DisplayList);

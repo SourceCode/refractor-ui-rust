@@ -1,5 +1,5 @@
 //! Application-level integration validation & benchmark suite verifying all 314 components
-//! across all 55 categories, all 68 themes, all 13 materials, all 9 FX overlays, and all
+//! across all 55 categories, all 67 themes, all 13 materials, all 9 FX overlays, and all
 //! deep interactive keyboard/IME/security controllers.
 
 use std::time::Instant;
@@ -187,7 +187,7 @@ fn validates_deep_interactive_keyboard_ime_and_security_controllers() {
 }
 
 #[test]
-fn benchmarks_68_themes_and_314_components_throughput() {
+fn benchmarks_67_themes_and_314_components_throughput() {
     let start = Instant::now();
     assert_eq!(theme_categories().len(), 9);
     for entry in all_themes() {
@@ -208,6 +208,6 @@ fn benchmarks_68_themes_and_314_components_throughput() {
     let elapsed_ms = start.elapsed().as_millis();
     assert!(
         elapsed_ms < 2000,
-        "resolving 68 themes + optical surfaces + catalog search took {elapsed_ms}ms"
+        "resolving 67 themes + optical surfaces + catalog search took {elapsed_ms}ms"
     );
 }

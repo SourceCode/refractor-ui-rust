@@ -9,7 +9,7 @@ Refractor for Rust adopts the Astryx Open-Internals component architecture and e
 - **Cargo Workspace Layout:**
   - `crates/refractor-security`: Defense-in-depth security primitives (`sanitize_url`, `sanitize_html`, `sanitize_csv_cell`, `build_safe_csv`, `clamp_f32`/`clamp_f64`, `is_safe_object_key`, `split_literal_highlight`, safe swizzle path validation). Zero external dependencies.
   - `crates/refractor-tokens`: Pure Rust color math, WCAG 2.2 AA contrast derivation, `PrismTheme`, `create_prism_theme`, `define_theme`, 13 `ThemeMaterial` archetypes, 9 `ThemeOverlayFx` overlays, `ThemeFxConfig`, `ThemeMotionConfig`, `ThemeEditorColors`.
-  - `crates/refractor-themes`: Complete 68-theme catalog (5 Optical Glass presets + 63 WebOS-v3 themes across 9 categories).
+  - `crates/refractor-themes`: Complete 67-theme catalog (5 Optical Glass presets + 62 WebOS-v3 themes across 9 categories).
   - `crates/refractor-core`: GPUI integration (`ThemeGlobal`, concentric SDF `optical_surface` GPU material painter for all 13 materials, `OpticalBackdrop`, `FxOverlay` for all 9 overlays, `BaseProps`, `StyleOverride`, `ComponentDoc`, `ComponentRegistry`, IME-safe helpers) + Iced-inspired `RefractorApp` / `Task` / `Subscription` runtime.
   - `crates/refractor-components`: Complete 314-component catalog across all 55 categories with Astryx Open-Internals parity, GPUI `RenderOnce` implementations (including horizontal `MenuBarTrigger`/`MenuDropdownItem` & `WindowTitlebar` with `WindowChromeStyle`), typed Props, and `ComponentDoc` metadata.
   - `crates/refractor-cli`: Agent-ready CLI (`component`, `docs`, `theme`, `swizzle`, `check`).

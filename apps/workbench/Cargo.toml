@@ -1,6 +1,6 @@
 [package]
 name = "refractor-workbench"
-description = "Interactive GPUI Desktop Optical Workbench & 68-Theme Studio for Refractor UI for Rust"
+description = "Interactive GPUI Desktop Optical Workbench & 67-Theme Studio for Refractor UI for Rust"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true

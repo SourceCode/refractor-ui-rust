@@ -202,7 +202,7 @@ bespoke_ai_obs_widget!(CommandInputBar, "Command Input Bar", "Shell", "$ cargo t
 bespoke_ai_obs_widget!(CopyableCommandBlock, "Copyable Command Block", "Copy", "cargo run -p refractor-cli -- theme list", TerminalBlock);
 bespoke_ai_obs_widget!(LiveLogStreamer, "Live Log Streamer", "INFO", "[20:54:01] 39/39 tests passed", TerminalBlock);
 bespoke_ai_obs_widget!(ProcessStatusPill, "Process Status Pill", "PID 4820", "Running • 0.8% CPU", TokenMeter);
-bespoke_ai_obs_widget!(StructuredOutputViewer, "Structured Output Viewer", "JSON", "{ \"components\": 314, \"themes\": 68 }", TerminalBlock);
+bespoke_ai_obs_widget!(StructuredOutputViewer, "Structured Output Viewer", "JSON", "{ \"components\": 314, \"themes\": 67 }", TerminalBlock);
 bespoke_ai_obs_widget!(TerminalMultiplexer, "Terminal Multiplexer", "2 Panes", "Pane 1: cargo watch • Pane 2: git", TerminalBlock);
 
 // System, DevOps & Observability Widgets (6)

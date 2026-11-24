@@ -16,7 +16,7 @@ Porting Refractor Optical Glass UI Kit (`glass-ui-v1`) into a native Rust deskto
 1. **Cargo Workspace Crate Boundaries:**
    - `crates/refractor-security`: Zero-dependency pure Rust security & sanitization primitives.
    - `crates/refractor-tokens`: Pure Rust deterministic color math, WCAG 2.2 AA derivation, `PrismTheme`, `create_prism_theme`, `define_theme`, 13 material archetypes, and 9 FX overlays. **MUST NEVER** depend on GPU or OS windowing crates.
-   - `crates/refractor-themes`: All 68 full-transformation themes (5 Optical Glass presets + 63 WebOS-v3 themes).
+   - `crates/refractor-themes`: All 67 full-transformation themes (5 Optical Glass presets + 62 WebOS-v3 themes).
    - `crates/refractor-core`: GPUI integration (`ThemeGlobal`, `OpticalSurface` GPU material painter, `BaseProps`, `ComponentDoc`, `ComponentRegistry`) + Iced-inspired `RefractorApp` / `Task` / `Subscription` runtime.
    - `crates/refractor-components`: Complete 314-component catalog across all 55 categories. **MUST NEVER** import from `apps/*`.
    - `crates/refractor-cli`: Agent-ready CLI (`component`, `docs`, `theme`, `swizzle`, `check`).
@@ -37,4 +37,4 @@ Porting Refractor Optical Glass UI Kit (`glass-ui-v1`) into a native Rust deskto
 
 ## 3. Enforcement
 
-- `cargo run -p refractor-xtask -- check-repo` fails CI if any crate manifest drifts, if any of the 314 components lack doc registration, or if any of the 68 themes are missing.
+- `cargo run -p refractor-xtask -- check-repo` fails CI if any crate manifest drifts, if any of the 314 components lack doc registration, or if any of the 67 themes are missing.

@@ -1,6 +1,6 @@
-//! Complete 68-theme multi-material & optical glass catalog ported from `glass-ui-v1`:
+//! Complete 67-theme multi-material & optical glass catalog ported from `glass-ui-v1`:
 //! - 5 Optical Glass Presets (`alabaster`, `obsidian`, `amethyst`, `emerald-tide`, `solar-prism`)
-//! - 63 WebOS-v3 Full-Transformation Themes across 9 categories, 13 material archetypes, and 9 FX overlays.
+//! - 62 WebOS-v3 Full-Transformation Themes across 9 categories, 13 material archetypes, and 9 FX overlays.
 
 use std::sync::OnceLock;
 
@@ -23,7 +23,7 @@ pub struct ThemeCategoryMeta {
     pub description: &'static str,
 }
 
-/// Complete catalog entry for one of the 68 shipped themes.
+/// Complete catalog entry for one of the 67 shipped themes.
 #[derive(Debug, Clone)]
 pub struct ThemeCatalogEntry {
     pub id: String,
@@ -457,7 +457,7 @@ fn build_catalog() -> Vec<ThemeCatalogEntry> {
 
 static CATALOG: OnceLock<Vec<ThemeCatalogEntry>> = OnceLock::new();
 
-/// Returns all 68 shipped Refractor themes.
+/// Returns all 67 shipped Refractor themes.
 pub fn all_themes() -> &'static [ThemeCatalogEntry] {
     CATALOG.get_or_init(build_catalog).as_slice()
 }
@@ -522,9 +522,9 @@ mod tests {
     use super::*;
 
     #[test]
-    fn catalog_contains_all_68_themes() {
+    fn catalog_contains_all_67_themes() {
         let themes = all_themes();
-        assert_eq!(themes.len(), 68, "expected 5 optical glass + 63 WebOS-v3 themes");
+        assert_eq!(themes.len(), 67, "expected 5 optical glass + 62 WebOS-v3 themes");
     }
 
     #[test]

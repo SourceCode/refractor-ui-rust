@@ -1,6 +1,6 @@
 [package]
 name = "refractor-studio-showcase"
-description = "Multi-suite native GPUI Desktop Application showcasing all 7 bespoke component domain suites across 68 themes"
+description = "Multi-suite native GPUI Desktop Application showcasing all 7 bespoke component domain suites across 67 themes"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true

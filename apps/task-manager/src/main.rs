@@ -857,7 +857,7 @@ impl TaskManagerApp {
                         div()
                             .id("menu-help-about")
                             .on_click(cx.listener(|this, _ev, _win, cx| {
-                                "Refractor Tasks v1.0.0 • Native GPUI + 13 Materials + 9 GPU FX"
+                                "Refractor Tasks v1.0.1 • Native GPUI + 13 Materials + 9 GPU FX"
                                     .clone_into(&mut this.state.status_message);
                                 this.state.close_menu();
                                 cx.notify();

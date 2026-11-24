@@ -122,7 +122,7 @@ fn cmd_theme(args: &[String]) -> ExitCode {
             return ExitCode::FAILURE;
         };
         let Some(entry) = find_theme(id) else {
-            eprintln!("Theme '{id}' not found in the 68-theme catalog.");
+            eprintln!("Theme '{id}' not found in the 67-theme catalog.");
             return ExitCode::FAILURE;
         };
         let resolved = entry.resolve();
@@ -260,9 +260,9 @@ fn cmd_check(args: &[String]) -> ExitCode {
     let group_count = all_component_groups().len();
     let theme_count = all_themes().len();
 
-    let ok = comp_count == 314 && group_count == 55 && theme_count == 68;
+    let ok = comp_count == 314 && group_count == 55 && theme_count == 67;
     println!(
-        "Refractor check (strict={strict}): components={comp_count}/314, categories={group_count}/55, themes={theme_count}/68"
+        "Refractor check (strict={strict}): components={comp_count}/314, categories={group_count}/55, themes={theme_count}/67"
     );
     if ok {
         ExitCode::SUCCESS

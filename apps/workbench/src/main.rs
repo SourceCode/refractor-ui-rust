@@ -1,4 +1,4 @@
-//! Native GPU-accelerated Desktop **Refractor Optical Workbench & 68-Theme Studio**
+//! Native GPU-accelerated Desktop **Refractor Optical Workbench & 67-Theme Studio**
 //! demonstrating Iced-inspired `RefractorApp` architecture on top of Zed's GPUI,
 //! live GPU `FxOverlay` rendering, 9-category theme filtering, and 55-category component browsing.
 
@@ -51,7 +51,7 @@ impl RefractorApp for OpticalWorkbench {
     }
 
     fn title(&self) -> String {
-        "Refractor UI for Rust — Optical Workbench & 68-Theme Studio".to_owned()
+        "Refractor UI for Rust — Optical Workbench & 67-Theme Studio".to_owned()
     }
 
     fn theme(&self) -> PrismTheme {
@@ -162,7 +162,7 @@ impl RefractorApp for OpticalWorkbench {
             .on_click(cx.listener(|host, _ev, _win, cx| {
                 host.dispatch(WorkbenchMessage::NextTheme, cx);
             }))
-            .child(PrimaryButton::new("Cycle All 68 Themes →").size(ButtonSize::Md));
+            .child(PrimaryButton::new("Cycle All 67 Themes →").size(ButtonSize::Md));
 
         let next_group_btn = div()
             .id("next-group-btn")
@@ -195,7 +195,7 @@ impl RefractorApp for OpticalWorkbench {
                 vec![
                     SharedString::from("Overview"),
                     SharedString::from("314 Components"),
-                    SharedString::from("68 Themes"),
+                    SharedString::from("67 Themes"),
                 ],
                 self.active_tab,
             ));
@@ -235,7 +235,7 @@ impl RefractorApp for OpticalWorkbench {
                             .gap(px(12.0))
                             .child(
                                 TopNavBar::new("Refractor Optical Glass UI Framework")
-                                    .subtitle("GPUI GPU-Accelerated • Iced Ergonomics • 314 Components • 68 Themes"),
+                                    .subtitle("GPUI GPU-Accelerated • Iced Ergonomics • 314 Components • 67 Themes"),
                             )
                             .child(Breadcrumbs::new(vec![
                                 SharedString::from("Workspace"),
@@ -325,13 +325,13 @@ impl RefractorApp for OpticalWorkbench {
                                         vec!["Crate".to_owned(), "Role".to_owned(), "Status".to_owned()],
                                         vec![
                                             vec!["refractor-tokens".to_owned(), "Color Math & Theme Engine".to_owned(), "Verified".to_owned()],
-                                            vec!["refractor-themes".to_owned(), "68 Multi-Material Themes".to_owned(), "Verified".to_owned()],
+                                            vec!["refractor-themes".to_owned(), "67 Multi-Material Themes".to_owned(), "Verified".to_owned()],
                                             vec!["refractor-components".to_owned(), "314 GPUI Components".to_owned(), "Verified".to_owned()],
                                         ],
                                     ))
                                     .child(TerminalEmulator::new(vec![
                                         SharedString::from("$ cargo run -p refractor-cli -- check --strict"),
-                                        SharedString::from("Refractor check (strict=true): components=314/314, categories=55/55, themes=68/68"),
+                                        SharedString::from("Refractor check (strict=true): components=314/314, categories=55/55, themes=67/67"),
                                     ])),
                             ),
                     ),
@@ -342,7 +342,7 @@ impl RefractorApp for OpticalWorkbench {
                     theme.material.as_str(),
                     theme.fx.wallpaper_overlay.as_str()
                 ),
-                "Refractor UI v1.0.0 • GPUI 0.2.2 • Apache-2.0",
+                "Refractor UI v1.0.1 • GPUI 0.2.2 • Apache-2.0",
             ))
             .into_any_element()
     }
@@ -357,7 +357,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn workbench_state_transitions_work_across_all_68_themes_and_55_categories() {
+    fn workbench_state_transitions_work_across_all_67_themes_and_55_categories() {
         let (mut app, _) = OpticalWorkbench::new();
         assert_eq!(app.theme().name, "alabaster");
 

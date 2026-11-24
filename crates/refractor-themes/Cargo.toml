@@ -1,6 +1,6 @@
 [package]
 name = "refractor-themes"
-description = "68 full-transformation multi-material and optical glass themes for Refractor UI for Rust"
+description = "67 full-transformation multi-material and optical glass themes for Refractor UI for Rust"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true

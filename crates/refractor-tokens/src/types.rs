@@ -160,7 +160,7 @@ pub enum ThemeControlsLayout {
     Right,
 }
 
-/// All 9 theme collection categories spanning the 68 shipped themes.
+/// All 9 theme collection categories spanning the 67 shipped themes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum ThemeCollectionCategory {

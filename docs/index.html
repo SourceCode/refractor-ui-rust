@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Refractor UI for Rust — Optical Glass & Multi-Material GPUI Framework</title>
-  <meta name="description" content="Native GPU-accelerated Rust desktop UI framework built on Zed's GPUI with Iced-inspired ergonomics, 314 components across 55 categories, 68 themes, 13 materials, and 9 GPU FX overlays." />
+  <meta name="description" content="Native GPU-accelerated Rust desktop UI framework built on Zed's GPUI with Iced-inspired ergonomics, 314 components across 55 categories, 67 themes, 13 materials, and 9 GPU FX overlays." />
   <style>
     :root {
       --bg-start: #f3f5f8;
@@ -287,7 +287,7 @@
     <header class="slab nav">
       <div class="brand">
         <div class="brand-icon">R</div>
-        <span>Refractor UI for Rust <span style="opacity:0.65;font-weight:500;">v1.0.0</span></span>
+        <span>Refractor UI for Rust <span style="opacity:0.65;font-weight:500;">v1.0.1</span></span>
       </div>
       <div class="btn-row" role="group" aria-label="Live theme preview">
         <button class="btn-primary btn-sm" data-set-theme="alabaster">Alabaster</button>
@@ -304,12 +304,12 @@
       <p class="lead">
         100% native, GPU-accelerated Rust desktop UI kit combining the Refractor Optical Glass visual language,
         Zed's <strong>GPUI</strong> rendering engine, and Iced-inspired declarative application architecture —
-        with <strong>314 components</strong>, <strong>68 themes</strong>, <strong>13 material archetypes</strong>,
+        with <strong>314 components</strong>, <strong>67 themes</strong>, <strong>13 material archetypes</strong>,
         <strong>9 GPU FX overlays</strong>, and strict <code>#![forbid(unsafe_code)]</code> governance.
       </p>
       <div class="btn-row">
         <a class="btn-primary" href="https://github.com/SourceCode/refractor-ui-rust">View on GitHub</a>
-        <a class="btn-secondary" href="https://github.com/SourceCode/refractor-ui-rust/releases/tag/v1.0.0">Release v1.0.0</a>
+        <a class="btn-secondary" href="https://github.com/SourceCode/refractor-ui-rust/releases/tag/v1.0.1">Release v1.0.1</a>
         <a class="btn-secondary" href="https://github.com/SourceCode/refractor-ui-rust/tree/main/docs/adr">Read ADRs (0001–0006)</a>
       </div>
     </section>
@@ -322,7 +322,7 @@
       </div>
       <div class="slab">
         <div class="kpi-label">Multi-Material Themes</div>
-        <div class="kpi-value">68</div>
+        <div class="kpi-value">67</div>
         <div class="kpi-delta">13 Materials • 9 GPU FX Overlays</div>
       </div>
       <div class="slab">
@@ -364,7 +364,7 @@ cd refractor-ui-rust
 # Launch interactive Optical Glass Task Manager
 cargo run -p refractor-task-manager
 
-# Launch 68-Theme Optical Workbench
+# Launch 67-Theme Optical Workbench
 cargo run -p refractor-workbench
 
 # Launch 7-Suite Studio Showcase
@@ -383,7 +383,7 @@ cargo run -p refractor-xtask -- check-repo</div>
         <h2>Modular Cargo Architecture</h2>
         <p><strong>refractor-security</strong> — Zero-dep URL, HTML, OWASP CSV, NaN/Inf, ReDoS-safe highlight &amp; swizzle guards.</p>
         <p><strong>refractor-tokens</strong> — Pure Rust WCAG 2.2 AA contrast derivation, <code>create_prism_theme</code> &amp; <code>define_theme</code>.</p>
-        <p><strong>refractor-themes</strong> — 5 Optical Glass presets + 63 WebOS-v3 themes across 9 collections.</p>
+        <p><strong>refractor-themes</strong> — 5 Optical Glass presets + 62 WebOS-v3 themes across 9 collections.</p>
         <p><strong>refractor-core</strong> — GPUI <code>ThemeGlobal</code>, concentric SDF <code>optical_surface</code>, <code>OpticalBackdrop</code>, <code>FxOverlay</code> &amp; <code>RefractorApp</code>.</p>
         <p><strong>refractor-components</strong> — 314 typed <code>RenderOnce</code> GPUI components including horizontal <code>MenuBarTrigger</code>/<code>MenuDropdownItem</code> &amp; <code>WindowTitlebar</code>.</p>
         <p><strong>refractor-cli &amp; refractor-xtask</strong> — Component discovery, swizzling, and ADR/SemVer drift verification.</p>

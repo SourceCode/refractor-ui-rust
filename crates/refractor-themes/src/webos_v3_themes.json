@@ -1555,57 +1555,6 @@
     }
   },
   {
-    "id": "newwesternDark",
-    "sourceId": "newwesternDark",
-    "name": "New Western After Dark",
-    "description": "A premium dark-mode interpretation of the New Western brand with restrained gold accents.",
-    "mode": "dark",
-    "category": "modern-os",
-    "material": "mica",
-    "wallpaperOverlay": "noise",
-    "fontFamily": "\"Inter\", sans-serif",
-    "colors": {
-      "primary": "#c0985c",
-      "primaryText": "#0f0f0f",
-      "secondary": "#3a352b",
-      "accent": "#e0c089",
-      "success": "#10b981",
-      "warning": "#f59e0b",
-      "error": "#ef4444",
-      "text": "#f5f5f5",
-      "textMuted": "rgba(245, 245, 245, 0.55)",
-      "border": "rgba(192, 152, 92, 0.25)",
-      "windowBg": "rgba(18, 18, 18, 0.88)",
-      "windowBorder": "rgba(192, 152, 92, 0.25)",
-      "surface": "rgba(255, 255, 255, 0.04)",
-      "surfaceHighlight": "rgba(255, 255, 255, 0.08)",
-      "chromeBg": "rgba(255, 255, 255, 0.04)",
-      "chromeText": "rgba(255, 255, 255, 0.9)",
-      "wallpaper": "radial-gradient(at 0% 0%, hsla(40,30%,12%,1) 0, transparent 50%), radial-gradient(at 100% 0%, hsla(30,40%,18%,1) 0, transparent 55%), linear-gradient(135deg, #0f0f0f 0%, #171614 45%, #1f1d18 100%)"
-    },
-    "window": {
-      "radiusPx": 14,
-      "borderWidthPx": 1,
-      "backdropBlurPx": 14,
-      "shadow": "0 30px 60px -15px rgba(0, 0, 0, 0.6)",
-      "controlsLayout": "right",
-      "titleBarHeightPx": 40
-    },
-    "editor": {
-      "background": "rgba(18, 18, 18, 0.88)",
-      "caret": "#e0c089",
-      "comment": "rgba(245, 245, 245, 0.55)",
-      "gutter": "rgba(18, 18, 18, 0.88)",
-      "keyword": "#c0985c",
-      "line": "rgba(192, 152, 92, 0.25)",
-      "number": "#ef4444",
-      "selection": "rgba(255, 255, 255, 0.08)",
-      "selectionText": "#f5f5f5",
-      "string": "#10b981",
-      "text": "#f5f5f5"
-    }
-  },
-  {
     "id": "win11-mica",
     "sourceId": "win11-mica",
     "name": "Windows 11 Mica",

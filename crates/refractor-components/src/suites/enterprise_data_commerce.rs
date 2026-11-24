@@ -249,11 +249,11 @@ bespoke_enterprise_widget!(ShoppingCartDrawer, "Shopping Cart Drawer", "2 Items"
 bespoke_enterprise_widget!(CommentThread, "Comment Thread", "2 Replies", "Looks crisp in Alabaster & Obsidian!", CollabFeed);
 bespoke_enterprise_widget!(LivePresenceIndicator, "Live Presence Indicator", "Online", "3 collaborators viewing", CollabFeed);
 bespoke_enterprise_widget!(NotificationCenter, "Notification Center", "Unread 2", "Build v2.0.0 passed all gates", CollabFeed);
-bespoke_enterprise_widget!(ProductTour, "Product Tour", "Step 2/5", "Switch across 68 themes live", CollabFeed);
+bespoke_enterprise_widget!(ProductTour, "Product Tour", "Step 2/5", "Switch across 67 themes live", CollabFeed);
 
 // Design, 3D & Shader Inspector Controls (7)
 bespoke_enterprise_widget!(AlignmentToolbar, "Alignment Toolbar", "Layout", "Align Left • Center • Distribute", SearchFacet);
-bespoke_enterprise_widget!(AssetSwatchGrid, "Asset Swatch Grid", "Swatches", "68 Theme Palettes", CollabFeed);
+bespoke_enterprise_widget!(AssetSwatchGrid, "Asset Swatch Grid", "Swatches", "67 Theme Palettes", CollabFeed);
 bespoke_enterprise_widget!(GradientStopEditor, "Gradient Stop Editor", "Linear", "0% #E75C24 → 100% #38BDF8", Inspector3d);
 bespoke_enterprise_widget!(OpticalMaterialInspector, "Optical Material Inspector", "13 Materials", "Glass • Blur 18px • Specular", Inspector3d);
 bespoke_enterprise_widget!(SpringEasingPicker, "Spring Easing Picker", "Physics", "stiffness=280 damping=24", Inspector3d);

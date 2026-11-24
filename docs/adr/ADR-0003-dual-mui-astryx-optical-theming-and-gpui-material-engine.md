@@ -9,7 +9,7 @@
 
 ## 1. Context
 
-Refractor's visual identity combines tactile prismatic refractive glass with 68 full-transformation themes spanning 13 material archetypes and 9 GPU-friendly FX overlays. In Rust + GPUI, CSS custom properties are replaced by a zero-allocation-friendly `ThemeGlobal` (`gpui::Global`) and an `OpticalSurface` GPU renderer that translates theme tokens into GPUI `Hsla`/`Rgba` colors, `LinearGradient` specular arcs, multi-layer `BoxShadow` caustic glows, crisp hairline borders, and recessed input wells.
+Refractor's visual identity combines tactile prismatic refractive glass with 67 full-transformation themes spanning 13 material archetypes and 9 GPU-friendly FX overlays. In Rust + GPUI, CSS custom properties are replaced by a zero-allocation-friendly `ThemeGlobal` (`gpui::Global`) and an `OpticalSurface` GPU renderer that translates theme tokens into GPUI `Hsla`/`Rgba` colors, `LinearGradient` specular arcs, multi-layer `BoxShadow` caustic glows, crisp hairline borders, and recessed input wells.
 
 ## 2. Directives (Mandatory Invariants)
 
@@ -20,9 +20,9 @@ Refractor's visual identity combines tactile prismatic refractive glass with 68 
    - `ThemeGlobal` provides reactive GPUI root theming while `ThemeScope` allows nested isolated theme subtrees.
 3. **13 Material Archetypes & 9 FX Overlays:**
    - `OpticalSurface` faithfully renders `Glass`, `Mica`, `Bevel`, `Brutalist`, `Neon`, `Crt`, `Neumorphic`, `Clay`, `Paper`, `Flat`, `Chrome`, `Pixel`, and `Resin`, plus visual FX overlay treatments (`None`, `Noise`, `Scanlines`, `CyberGrid`, `RetroGrid`, `DotMatrix`, `PaperGrain`, `CrtRgb`, `HazardStripes`).
-4. **68 Shipped Themes (`refractor-themes`):**
-   - 5 Optical Glass presets (`alabaster`, `obsidian`, `amethyst`, `emerald-tide`, `solar-prism`) + 63 WebOS-v3 themes across all 9 categories.
+4. **67 Shipped Themes (`refractor-themes`):**
+   - 5 Optical Glass presets (`alabaster`, `obsidian`, `amethyst`, `emerald-tide`, `solar-prism`) + 62 WebOS-v3 themes across all 9 categories.
 
 ## 3. Enforcement
 
-- `refractor-tokens` and `refractor-themes` unit suites verify all 68 themes resolve deterministically with valid RGB derivation and WCAG contrast ratios.
+- `refractor-tokens` and `refractor-themes` unit suites verify all 67 themes resolve deterministically with valid RGB derivation and WCAG contrast ratios.

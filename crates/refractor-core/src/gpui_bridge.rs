@@ -29,7 +29,7 @@ pub fn set_theme(cx: &mut App, theme: PrismTheme) {
     cx.set_global(ThemeGlobal::new(theme));
 }
 
-/// Switches the active theme by one of the 68 shipped theme IDs (e.g. `"alabaster"`, `"obsidian"`, `"cyberpunk"`).
+/// Switches the active theme by one of the 67 shipped theme IDs (e.g. `"alabaster"`, `"obsidian"`, `"cyberpunk"`).
 pub fn set_theme_by_id(cx: &mut App, id: &str) {
     let theme = refractor_themes::resolve_theme_by_id(id);
     set_theme(cx, theme);

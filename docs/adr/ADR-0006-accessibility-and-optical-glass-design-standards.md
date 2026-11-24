@@ -9,7 +9,7 @@
 
 ## 1. Context
 
-A universal Rust desktop UI toolkit must deliver both museum-grade multi-material visual craftsmanship (Optical Glass + 68 themes) and frictionless developer ergonomics across complex desktop applications (IDEs, DAWs, NLEs, data grids, AI agent workbenches, OS shells).
+A universal Rust desktop UI toolkit must deliver both museum-grade multi-material visual craftsmanship (Optical Glass + 67 themes) and frictionless developer ergonomics across complex desktop applications (IDEs, DAWs, NLEs, data grids, AI agent workbenches, OS shells).
 
 ## 2. Directives (Mandatory Invariants)
 
@@ -23,7 +23,7 @@ A universal Rust desktop UI toolkit must deliver both museum-grade multi-materia
    - All normal text achieves >= 4.5:1 contrast via deterministic WCAG luminance derivation in `refractor-tokens`.
    - Every interactive control carries semantic accessibility metadata (`aria_label`, `role`, keyboard contract) and respects disabled state without misleading pointer affordances.
 3. **Dual Native GPUI + Iced-Inspired Application Ergonomics:**
-   - Developers can build views directly with GPUI's `Render` / `RenderOnce` / `Entity<T>` OR use `RefractorApp` (`State`, `Message`, `update -> Task<Message>`, `view`, `theme`, `subscriptions`) modeled on Iced's Elm architecture, sharing the exact same 314-component catalog and 68 themes.
+   - Developers can build views directly with GPUI's `Render` / `RenderOnce` / `Entity<T>` OR use `RefractorApp` (`State`, `Message`, `update -> Task<Message>`, `view`, `theme`, `subscriptions`) modeled on Iced's Elm architecture, sharing the exact same 314-component catalog and 67 themes.
 
 ## 3. Enforcement
 
