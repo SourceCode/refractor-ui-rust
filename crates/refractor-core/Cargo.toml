@@ -1,6 +1,6 @@
 [package]
 name = "refractor-core"
-description = "GPUI-accelerated optical surface renderer, Astryx Open-Internals contracts, and Iced-inspired application runtime for Refractor UI"
+description = "GPUI-accelerated optical surface renderer, Open-Internals contracts, and Iced-inspired application runtime for Refractor UI"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true

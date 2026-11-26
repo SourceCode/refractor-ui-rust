@@ -265,7 +265,7 @@ impl RefractorApp for OpticalWorkbench {
                                                 "Catalog Components",
                                                 format!("{}", all_component_specs().len()),
                                             )
-                                            .delta("55 Categories • Astryx Open-Internals"),
+                                            .delta("58 Categories • Open-Internals"),
                                         ),
                                     )
                                     .child(

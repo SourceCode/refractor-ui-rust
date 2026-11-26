@@ -1,6 +1,6 @@
 //! Complete 339-component catalog across 58 categories for **Refractor UI for Rust**.
 //!
-//! Powered by Zed's GPUI (`gpui`) and governed by Astryx Open-Internals (`ADR-0001`..`ADR-0006`).
+//! Powered by Zed's GPUI (`gpui`) and governed by Open-Internals (`ADR-0001`..`ADR-0006`).
 
 pub mod buttons;
 pub mod desktop;

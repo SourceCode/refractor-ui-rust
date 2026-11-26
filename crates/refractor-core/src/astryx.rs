@@ -1,4 +1,4 @@
-//! Astryx Open-Internals core contracts: `BaseProps`, `ComponentDoc`, all 55
+//! Open-Internals core contracts: `BaseProps`, `ComponentDoc`, all 58
 //! `ComponentCategory` variants, `ThemeProps`, and `ControllableState`.
 
 use std::collections::BTreeMap;
@@ -6,7 +6,7 @@ use std::collections::BTreeMap;
 use refractor_tokens::ComponentStyleOverride;
 use serde::{Deserialize, Serialize};
 
-/// Shared base properties embedded by every Refractor component (Astryx Tier 4).
+/// Shared base properties embedded by every Refractor component (Tier 4 customization).
 #[derive(Debug, Clone, Default, PartialEq)]
 pub struct BaseProps {
     /// Stable semantic identifier (`refractor-<kebab>`).

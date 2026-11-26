@@ -1,4 +1,4 @@
-# ADR-0003: Dual MUI + Astryx Optical Glass Theme Engine & GPUI Multi-Material Renderer
+# ADR-0003: Optical Glass Theme Engine & GPUI Multi-Material Renderer
 
 - **Status:** Accepted
 - **Date:** 2026-11-22
@@ -13,15 +13,15 @@ Refractor's visual identity combines tactile prismatic refractive glass with 67 
 
 ## 2. Directives (Mandatory Invariants)
 
-1. **MUI-Ergonomic `create_prism_theme(options)`:**
+1. **Single-Hex `create_prism_theme(options)`:**
    - Accepting a partial `PrismThemeOptions` struct automatically derives missing tonal variants (`light`, `dark`, WCAG 2.2 AA `contrast_text`, and `RgbColor` triplets) via pure deterministic color math in `refractor-tokens::color_math`.
-2. **Astryx-Style `define_theme(input)` & Scoped Inheritance:**
+2. **Cascading `define_theme(input)` & Scoped Inheritance:**
    - `define_theme` produces a serializable `DefinedPrismTheme` supporting theme inheritance (`extends`), light/dark token pairs, and per-component `ComponentStyleOverride` maps.
    - `ThemeGlobal` provides reactive GPUI root theming while `ThemeScope` allows nested isolated theme subtrees.
 3. **13 Material Archetypes & 9 FX Overlays:**
    - `OpticalSurface` faithfully renders `Glass`, `Mica`, `Bevel`, `Brutalist`, `Neon`, `Crt`, `Neumorphic`, `Clay`, `Paper`, `Flat`, `Chrome`, `Pixel`, and `Resin`, plus visual FX overlay treatments (`None`, `Noise`, `Scanlines`, `CyberGrid`, `RetroGrid`, `DotMatrix`, `PaperGrain`, `CrtRgb`, `HazardStripes`).
 4. **67 Shipped Themes (`refractor-themes`):**
-   - 5 Optical Glass presets (`alabaster`, `obsidian`, `amethyst`, `emerald-tide`, `solar-prism`) + 62 WebOS-v3 themes across all 9 categories.
+   - 5 Optical Glass presets (`alabaster`, `obsidian`, `amethyst`, `emerald-tide`, `solar-prism`) + 62 multi-material themes across all 9 categories.
 
 ## 3. Enforcement
 

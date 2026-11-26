@@ -1,4 +1,4 @@
-//! Dual MUI + Astryx Optical Glass Theme Engine (`create_prism_theme` and `define_theme`).
+//! Optical Glass Theme Engine (`create_prism_theme` and `define_theme`).
 
 use std::collections::BTreeMap;
 
@@ -272,7 +272,7 @@ pub fn create_prism_theme(options: PrismThemeOptions) -> PrismTheme {
     }
 }
 
-/// Astryx-style cascade theme definition supporting inheritance (`extends`),
+/// Cascading theme definition supporting inheritance (`extends`),
 /// `[light, dark]` token pairs, and per-component overrides.
 pub fn define_theme(input: DefinePrismThemeInput) -> DefinedPrismTheme {
     let mut merged_options = input

@@ -1,6 +1,6 @@
 [package]
 name = "refractor-components"
-description = "Complete 339-component catalog across 58 categories for Refractor UI for Rust (GPUI + Astryx Open-Internals)"
+description = "Complete 339-component catalog across 58 categories for Refractor UI for Rust (GPUI + Open-Internals)"
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true

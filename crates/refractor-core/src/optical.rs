@@ -1278,7 +1278,7 @@ fn build_material_shadows(theme: &PrismTheme, variant: SurfaceVariant) -> Vec<Bo
     }
 }
 
-/// Applies Astryx Tier 3 / Tier 4 [`ComponentStyleOverride`] onto a GPUI [`Div`].
+/// Applies Tier 3 / Tier 4 [`ComponentStyleOverride`] onto a GPUI [`Div`].
 pub fn apply_component_override(mut el: Div, ov: &ComponentStyleOverride) -> Div {
     if let Some(ref bg) = ov.background {
         el = el.bg(color_str_to_hsla(bg, RgbColor::new(255, 255, 255)));

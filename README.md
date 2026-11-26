@@ -5,7 +5,7 @@
 [![Rust: 1.88+](https://img.shields.io/badge/rust-1.88%2B-26bc92?style=flat-square)](./Cargo.toml)
 [![Site](https://img.shields.io/badge/docs-GitHub%20Pages-38bdf8?style=flat-square)](https://sourcecode.github.io/refractor-ui-rust/)
 
-**A 100% native, cross-platform, GPU-accelerated Rust desktop UI framework combining the Refractor Optical Glass UI Kit (`refractor-ui` v1.52.0 parity), Zed's GPUI (`gpui`), and Iced-inspired declarative application ergonomics — featuring 339 components across 58 categories, 67 full-transformation multi-material themes, a concentric GPU SDF optical surface painter, 10 DPR-capped optical shaders, 3-tier GPU performance profiles, Astryx Open-Internals architecture, and strict ADR-0001..ADR-0006 governance.**
+**A 100% native, cross-platform, GPU-accelerated Rust desktop UI framework combining the Refractor Optical Glass UI Kit (`refractor-ui` v1.52.0 parity), Zed's GPUI (`gpui`), and Iced-inspired declarative application ergonomics — featuring 339 components across 58 categories, 67 full-transformation multi-material themes, a concentric GPU SDF optical surface painter, 10 DPR-capped optical shaders, 3-tier GPU performance profiles, Open-Internals architecture, and strict ADR-0001..ADR-0006 governance.**
 
 **Project Site:** https://sourcecode.github.io/refractor-ui-rust/
 
@@ -17,7 +17,7 @@
 - **Atmospheric Stage Backdrop & 9 GPU FX Overlays (`OpticalBackdrop` & `FxOverlay`):** Multi-stop studio wallpaper gradients with warm/cool ambient caustic light pools plus all 9 GPU-accelerated overlays (`None`, `Noise`, `Scanlines`, `CyberGrid`, `RetroGrid`, `DotMatrix`, `PaperGrain`, `CrtRgb`, `HazardStripes`).
 - **Dual Application Ergonomics (GPUI Native + Iced-Inspired):** Build apps using either GPUI's native `Render`/`Entity<T>` model OR the Iced-inspired `RefractorApp` trait (`State`, `Message`, `update -> Task<Message>`, `view`, `theme`, `subscriptions`).
 - **339 Components Across 58 Categories (`refractor-components`):** Strongly-typed Rust `RenderOnce` GPUI elements including horizontal desktop menu bars (`MenuBarTrigger`, `MenuDropdownItem`), configurable `WindowTitlebar` (`WindowChromeStyle` + `.icon()`), tactile `RangeSlider` with 3D porcelain thumb, semantic `BadgeStatus`, and 10 bespoke domain suites (including Dynamic Gradient & AI-Glow FX, Shader & Optical FX, and Loaders, Skeletons & Data Transitions).
-- **67 Full-Transformation Themes (`refractor-themes`):** 5 flagship Optical Glass presets (`alabaster`, `obsidian`, `amethyst`, `emerald-tide`, `solar-prism`) + 62 WebOS-v3 themes spanning **13 material archetypes** (`glass`, `mica`, `bevel`, `brutalist`, `neon`, `crt`, `neumorphic`, `clay`, `paper`, `flat`, `chrome`, `pixel`, `resin`).
+- **67 Full-Transformation Themes (`refractor-themes`):** 5 flagship Optical Glass presets (`alabaster`, `obsidian`, `amethyst`, `emerald-tide`, `solar-prism`) + 62 multi-material desktop themes spanning **13 material archetypes** (`glass`, `mica`, `bevel`, `brutalist`, `neon`, `crt`, `neumorphic`, `clay`, `paper`, `flat`, `chrome`, `pixel`, `resin`).
 - **Native Windows App Icon Embedding:** Zero-dependency `build.rs` pattern embedding multi-resolution `assets/app.ico` at Win32 Resource ID `1`, automatically loaded by GPUI onto the taskbar, Alt-Tab switcher, Explorer executable, and native titlebar.
 - **Strict Rust Safety & Defense-in-Depth Security (`refractor-security`):** `#![forbid(unsafe_code)]`, zero `unwrap`/`expect`/`panic` in production code, URL protocol allowlisting, strict HTML sanitization, OWASP CSV formula neutralization, ReDoS-free literal highlighting, NaN/Infinity clamping, and path-traversal-hardened CLI swizzling.
 
@@ -27,7 +27,7 @@
 ├── crates/
 │   ├── refractor-security/    # Zero-dep defense-in-depth sanitization & validation (ADR-0005)
 │   ├── refractor-tokens/      # Pure Rust color math, WCAG 2.2 AA & theme engine (ADR-0003)
-│   ├── refractor-themes/      # 67 full-transformation multi-material themes (5 Optical + 62 WebOS-v3)
+│   ├── refractor-themes/      # 67 full-transformation multi-material themes (5 Optical + 62 Multi-Material)
 │   ├── refractor-core/        # GPUI ThemeGlobal, Concentric SDF OpticalSurface, OpticalBackdrop, FxOverlay, RefractorApp
 │   ├── refractor-components/  # Complete 339-component GPUI catalog across 58 categories
 │   ├── refractor-cli/         # Agent-ready CLI (`component`, `docs`, `theme`, `swizzle`, `check`)

@@ -1,5 +1,5 @@
 //! Pure Rust optical glass design tokens, deterministic color math, WCAG 2.2 AA
-//! contrast derivation, and dual MUI + Astryx theme engine (`create_prism_theme` & `define_theme`).
+//! contrast derivation, and optical multi-material theme engine (`create_prism_theme` & `define_theme`).
 
 pub mod color_math;
 pub mod engine;

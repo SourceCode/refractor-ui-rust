@@ -1,7 +1,7 @@
 //! Core GPUI + Iced-inspired UI framework engine for **Refractor UI for Rust**.
 //!
 //! Combines:
-//! - **Refractor Optical Glass (`glass-ui-v1`)** multi-material token & Astryx Open-Internals architecture
+//! - **Refractor Optical Glass (`refractor-ui`)** multi-material token & Open-Internals architecture
 //! - **Zed GPUI (`gpui`)** GPU-accelerated rendering, flexbox layout, and entity reactivity
 //! - **Iced-inspired** declarative `RefractorApp` (`State` + `Message` + `update` + `view` + `Task`) ergonomics
 

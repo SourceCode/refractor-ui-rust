@@ -1,6 +1,6 @@
-//! Complete 67-theme multi-material & optical glass catalog ported from `glass-ui-v1`:
+//! Complete 67-theme multi-material & optical glass catalog:
 //! - 5 Optical Glass Presets (`alabaster`, `obsidian`, `amethyst`, `emerald-tide`, `solar-prism`)
-//! - 62 WebOS-v3 Full-Transformation Themes across 9 categories, 13 material archetypes, and 9 FX overlays.
+//! - 62 Multi-Material Full-Transformation Themes across 9 categories, 13 material archetypes, and 9 FX overlays.
 
 use std::collections::HashMap;
 use std::sync::{LazyLock, OnceLock};
@@ -570,7 +570,7 @@ mod tests {
     #[test]
     fn catalog_contains_all_67_themes() {
         let themes = all_themes();
-        assert_eq!(themes.len(), 67, "expected 5 optical glass + 62 WebOS-v3 themes");
+        assert_eq!(themes.len(), 67, "expected 5 optical glass + 62 multi-material themes");
     }
 
     #[test]

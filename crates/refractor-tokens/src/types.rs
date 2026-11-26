@@ -265,7 +265,7 @@ impl PaletteColorInput {
     }
 }
 
-/// Per-component typed style override (Astryx Tier 3 customization).
+/// Per-component typed style override (Tier 3 customization).
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct ComponentStyleOverride {
     pub background: Option<String>,
@@ -481,7 +481,7 @@ pub struct PrismThemeOptions {
     pub custom_tokens: BTreeMap<String, String>,
 }
 
-/// Input to Astryx-style `define_theme`.
+/// Input to cascading `define_theme`.
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 pub struct DefinePrismThemeInput {
     pub name: String,
