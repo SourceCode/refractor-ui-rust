@@ -31419,5 +31419,1692 @@
         "description": "Typed --prism-* CSS custom property and inline optical style overrides."
       }
     ]
+  },
+  {
+    "name": "PrismaticCursorHalo",
+    "displayName": "Prismatic Cursor Halo",
+    "group": "Dynamic Gradient & AI-Glow FX",
+    "category": "gradient-ai-glow-fx",
+    "keywords": [
+      "cursor",
+      "halo",
+      "spotlight",
+      "radial-gradient",
+      "hover-glow",
+      "glass",
+      "fx"
+    ],
+    "description": "Cursor-tracking radial spotlight surface that softly illuminates underlying glass borders, bevels, and content as the pointer moves across the workspace. Updates `--prism-halo-x`/`--prism-halo-y` via a requestAnimationFrame-coalesced DOM ref for zero React re-renders during pointer movement.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Wrap dashboard cards, toolbar decks, or glass bento grids to provide tactile spatial lighting feedback without triggering React reconciliation on every pointermove."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid stacking multiple large radius halos directly inside one another; prefer a single workspace halo or per-card spotlight."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Decorative Lighting & Keyboard Focus Parity",
+        "criterion": "1.1.1 Non-text Content & 2.1.1 Keyboard",
+        "requirement": "Spotlight layers carry `aria-hidden=\"true\"` and `pointer-events-none`, and keyboard focus inside the surface gracefully centers the halo without altering text contrast.",
+        "description": "Ensures screen readers and keyboard-only users experience clear semantic focus without pointer-only lockouts."
+      }
+    ],
+    "props": [
+      {
+        "name": "radiusPx",
+        "type": "number",
+        "defaultValue": "240",
+        "description": "Spotlight radius in pixels (clamped 80–520)."
+      },
+      {
+        "name": "intensity",
+        "type": "number",
+        "defaultValue": "0.78",
+        "description": "Spotlight peak opacity from 0 to 1."
+      },
+      {
+        "name": "spectrum",
+        "type": "'prismatic' | 'aurora' | 'solar' | 'emerald'",
+        "defaultValue": "'prismatic'",
+        "description": "Token-driven radial color spectrum."
+      },
+      {
+        "name": "borderGlow",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Illuminates the outer glass border perimeter near the cursor."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Disables pointer tracking and spotlight lighting."
+      }
+    ]
+  },
+  {
+    "name": "AiFocusRing",
+    "displayName": "AI Focus Ring",
+    "group": "Dynamic Gradient & AI-Glow FX",
+    "category": "gradient-ai-glow-fx",
+    "keywords": [
+      "ai",
+      "focus-ring",
+      "orbiting-border",
+      "conic-gradient",
+      "glow",
+      "prompt",
+      "processing"
+    ],
+    "description": "Rotating conic-gradient perimeter that wraps active prompt fields, agent cards, or selected panels with a fluid multi-hue glow when focused, active, or processing. Powered by compositor-only `transform: rotate()` keyframes with automatic `prefers-reduced-motion` and `performanceMode=\"max\"` pauses.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Enable `processing` while an AI agent is reasoning or streaming to increase orbital cadence and glow intensity without shifting layout geometry."
+      },
+      {
+        "guidance": false,
+        "description": "Do not remove native keyboard `:focus-visible` indicators on interactive children; `AiFocusRing` complements semantic focus states."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Non-Obstructive Focus Wrapper & Reduced-Motion Compliance",
+        "criterion": "2.3.3 Animation from Interactions & 2.4.7 Focus Visible",
+        "requirement": "Orbiting border layers carry `aria-hidden=\"true\"` and `pointer-events-none` and automatically pause under `prefers-reduced-motion: reduce`.",
+        "description": "Protects vestibular-sensitive users while clearly indicating active AI prompt or panel focus."
+      }
+    ],
+    "props": [
+      {
+        "name": "active",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Forces the orbiting border visible even without child focus."
+      },
+      {
+        "name": "processing",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Accelerates orbital rotation and intensifies ambient outer glow."
+      },
+      {
+        "name": "palette",
+        "type": "'ai-spectrum' | 'cobalt-amber' | 'emerald-cyan' | 'rose-violet'",
+        "defaultValue": "'ai-spectrum'",
+        "description": "Conic-gradient spectrum preset."
+      },
+      {
+        "name": "thicknessPx",
+        "type": "number",
+        "defaultValue": "2",
+        "description": "Border thickness in pixels (clamped 1–6)."
+      },
+      {
+        "name": "speedSeconds",
+        "type": "number",
+        "defaultValue": "3.2",
+        "description": "Orbit period in seconds (clamped 0.8–12)."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Disables orbiting illumination."
+      }
+    ]
+  },
+  {
+    "name": "FluidMeshCanvas",
+    "displayName": "Fluid Mesh Canvas",
+    "group": "Dynamic Gradient & AI-Glow FX",
+    "category": "gradient-ai-glow-fx",
+    "keywords": [
+      "mesh",
+      "fluid",
+      "gradient",
+      "ambient",
+      "backdrop",
+      "webgl",
+      "canvas",
+      "cadence"
+    ],
+    "description": "Live, slowly morphing multi-point color mesh ambient backdrop positioned behind translucent glass panels. Powered by a DPR-capped, visibility-aware WebGL fragment shader with seamless token-driven CSS fallback, reacting to pointer hover, typing cadence, and semantic system moods (`calm`, `creative`, `thinking`, `alert`).",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Feed live prompt typing cadence (`0..1`) or agent state mood into `FluidMeshCanvas` to provide ambient visual feedback without triggering expensive DOM layout passes."
+      },
+      {
+        "guidance": false,
+        "description": "Keep `intensity` subtle (`0.6–0.9`) behind text surfaces to guarantee strict WCAG 2.2 AA foreground legibility."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Reduced-Motion, Visibility Pause & Non-Interactive Backdrop",
+        "criterion": "2.2.2 Pause, Stop, Hide & 2.3.3 Animation from Interactions",
+        "requirement": "Canvas and CSS mesh layers are marked `aria-hidden=\"true\"` and automatically pause offscreen, in hidden tabs, under `prefers-reduced-motion: reduce`, and in `performanceMode=\"max\"`.",
+        "description": "Prevents distraction and unnecessary GPU utilization while preserving foreground contrast."
+      }
+    ],
+    "props": [
+      {
+        "name": "mood",
+        "type": "'calm' | 'creative' | 'thinking' | 'alert'",
+        "defaultValue": "'creative'",
+        "description": "Ambient palette & motion energy preset."
+      },
+      {
+        "name": "cadence",
+        "type": "number",
+        "defaultValue": "0.35",
+        "description": "Live interaction/typing cadence multiplier (0–1)."
+      },
+      {
+        "name": "intensity",
+        "type": "number",
+        "defaultValue": "0.85",
+        "description": "Backdrop intensity (0–1.5)."
+      },
+      {
+        "name": "animated",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Toggles continuous mesh morphing."
+      },
+      {
+        "name": "disableWebGL",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Forces lightweight CSS gradient backdrop mode."
+      }
+    ]
+  },
+  {
+    "name": "GradientTextSelection",
+    "displayName": "Gradient Text Selection & Caret",
+    "group": "Dynamic Gradient & AI-Glow FX",
+    "category": "gradient-ai-glow-fx",
+    "keywords": [
+      "caret",
+      "cursor",
+      "selection",
+      "gradient-text",
+      "highlight",
+      "prompt",
+      "input"
+    ],
+    "description": "Custom-styled spectrum blinking caret and gradient text-selection highlight supporting both interactive editable inputs (`mode=\"editable\"`) and selectable prose surfaces (`mode=\"prose\"`). Features IME-safe Enter submission and zero raw color literals.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Use in AI prompt inputs or editorial callouts where tactile spectrum selection reinforces active focus while preserving native clipboard copy/paste and screen-reader semantics."
+      },
+      {
+        "guidance": false,
+        "description": "Do not override the underlying native `<input>` semantics; the visual gradient caret layer stays strictly `aria-hidden=\"true\"` and synchronized to `selectionStart`/`selectionEnd`."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Native Input & IME-Safe Keyboard Semantics",
+        "criterion": "2.1.1 Keyboard & 4.1.2 Name, Role, Value",
+        "requirement": "Uses a real labelled `<input type=\"text\">` with keyboard-only `.prism-focus-ring` and guards Enter submission with `!e.nativeEvent.isComposing`.",
+        "description": "Guarantees full screen-reader, clipboard, mobile touch-selection, and CJK IME compatibility."
+      }
+    ],
+    "props": [
+      {
+        "name": "mode",
+        "type": "'editable' | 'prose'",
+        "defaultValue": "'editable'",
+        "description": "Switches between interactive gradient-caret input and selectable prose highlight."
+      },
+      {
+        "name": "value",
+        "type": "string",
+        "defaultValue": "undefined",
+        "description": "Controlled input text value."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "defaultValue": "'Synthesize optical shaders...'",
+        "description": "Initial uncontrolled text value."
+      },
+      {
+        "name": "palette",
+        "type": "'spectrum' | 'aurora' | 'solar'",
+        "defaultValue": "'spectrum'",
+        "description": "Spectrum gradient palette for caret and selection fill."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(value: string) => void",
+        "defaultValue": "undefined",
+        "description": "Called on IME-safe Enter submission."
+      }
+    ]
+  },
+  {
+    "name": "AmbientAuraBleed",
+    "displayName": "Ambient Aura Bleed",
+    "group": "Dynamic Gradient & AI-Glow FX",
+    "category": "gradient-ai-glow-fx",
+    "keywords": [
+      "aura",
+      "ambient-bleed",
+      "antigravity",
+      "bloom",
+      "glow",
+      "elevation",
+      "depth"
+    ],
+    "description": "Soft floating light bloom anchored beneath elevated optical cards or active AI controls that gently drifts and breathes to reinforce weightlessness and physical depth.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Anchor beneath hero AI command palettes, elevated floating docks, or featured KPI cards to create tactile depth separation."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid placing `AmbientAuraBleed` on every item inside dense 100-row tables; reserve ambient floor blooms for focal elevated surfaces."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Decorative Floor Glow & Reduced-Motion Safety",
+        "criterion": "2.3.3 Animation from Interactions",
+        "requirement": "Bloom layers carry `aria-hidden=\"true\"` and `pointer-events-none`, and pause breathing automatically under `prefers-reduced-motion: reduce` and `performanceMode=\"max\"`.",
+        "description": "Keeps floating depth subtle and non-distracting for all users."
+      }
+    ],
+    "props": [
+      {
+        "name": "tone",
+        "type": "'prism' | 'ai-violet' | 'emerald' | 'amber' | 'critical'",
+        "defaultValue": "'prism'",
+        "description": "Semantic optical bloom palette."
+      },
+      {
+        "name": "intensity",
+        "type": "number",
+        "defaultValue": "0.78",
+        "description": "Bloom peak opacity (0–1.5)."
+      },
+      {
+        "name": "elevation",
+        "type": "'sm' | 'md' | 'lg'",
+        "defaultValue": "'md'",
+        "description": "Offset and footprint size beneath the wrapped element."
+      },
+      {
+        "name": "breathing",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Enables gentle antigravity breathing drift."
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Smoothly fades the bloom in or out."
+      }
+    ]
+  },
+  {
+    "name": "ReactiveInputShimmer",
+    "displayName": "Reactive Input Shimmer",
+    "group": "Dynamic Gradient & AI-Glow FX",
+    "category": "gradient-ai-glow-fx",
+    "keywords": [
+      "shimmer",
+      "input",
+      "light-sweep",
+      "prompt",
+      "autocomplete",
+      "focus",
+      "submit"
+    ],
+    "description": "Directional optical light sweep traveling across a frosted input field or AI prompt bar on focus, IME-safe submission, autocomplete acceptance, or imperative `shimmerTrigger` increments.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Provide domain-specific `suggestions` to pair tactile autocomplete feedback with a subtle one-shot optical sweep."
+      },
+      {
+        "guidance": false,
+        "description": "Do not trigger continuous infinite sweeps on idle inputs; one-shot event-driven sweeps preserve calm focus and zero idle GPU draw."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "IME-Safe Submission & Accessible Prompt Semantics",
+        "criterion": "2.1.1 Keyboard & 3.3.2 Labels or Instructions",
+        "requirement": "Pairs a screen-reader `<label>`, keyboard-only `.prism-focus-ring`, `!e.nativeEvent.isComposing` Enter guard, and reduced-motion pause.",
+        "description": "Ensures seamless keyboard, screen reader, and CJK IME usability."
+      }
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "string",
+        "defaultValue": "undefined",
+        "description": "Controlled text value."
+      },
+      {
+        "name": "defaultValue",
+        "type": "string",
+        "defaultValue": "''",
+        "description": "Uncontrolled initial text value."
+      },
+      {
+        "name": "suggestions",
+        "type": "ReadonlyArray<string>",
+        "defaultValue": "3 prompt presets",
+        "description": "Quick autocomplete chips that fill input and fire a sweep."
+      },
+      {
+        "name": "shimmerTrigger",
+        "type": "number",
+        "defaultValue": "0",
+        "description": "Increment to imperatively fire a directional shimmer sweep."
+      },
+      {
+        "name": "onSubmit",
+        "type": "(value: string) => void",
+        "defaultValue": "undefined",
+        "description": "Called on IME-safe Enter or submit click."
+      }
+    ]
+  },
+  {
+    "name": "IridescentRimSurface",
+    "displayName": "Iridescent Rim-Light Surface",
+    "group": "Dynamic Gradient & AI-Glow FX",
+    "category": "gradient-ai-glow-fx",
+    "keywords": [
+      "iridescent",
+      "rim-light",
+      "dichroic",
+      "border",
+      "specular",
+      "tilt",
+      "glass"
+    ],
+    "description": "Dynamic border-lighting optical surface shifting its color temperature and specular rim angle smoothly in response to cursor proximity or optional device tilt (`enableTilt`) via zero-rerender rAF-coalesced CSS variables.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Use on featured tier cards, hardware modules, or focal media panels to create dichroic rim-light feedback without heavy WebGL overhead."
+      },
+      {
+        "guidance": false,
+        "description": "Enable `enableTilt` selectively on mobile/tablet hero cards rather than dozens of simultaneous list rows."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Decorative Specular Rim & Passive Orientation Listener",
+        "criterion": "1.1.1 Non-text Content & 2.5.4 Motion Actuation",
+        "requirement": "Rim overlays are `aria-hidden=\"true\"` and `pointer-events-none`; `deviceorientation` is purely visual, registered `{ passive: true }`, and cleaned up cleanly on unmount.",
+        "description": "Ensures tilt lighting never gates functionality or leaks global event listeners."
+      }
+    ],
+    "props": [
+      {
+        "name": "intensity",
+        "type": "number",
+        "defaultValue": "0.85",
+        "description": "Rim-light visibility intensity (0–1)."
+      },
+      {
+        "name": "spectrum",
+        "type": "'dichroic' | 'prism' | 'arctic' | 'amber-rose'",
+        "defaultValue": "'dichroic'",
+        "description": "Rim gradient spectrum preset."
+      },
+      {
+        "name": "enableTilt",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Reacts to passive `deviceorientation` tilt events on supported devices."
+      },
+      {
+        "name": "elevated",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Renders `prism-slab` optical glass elevation when true or recessed `prism-well` when false."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Freezes specular rim updates."
+      }
+    ]
+  },
+  {
+    "name": "StatefulEnergyRibbon",
+    "displayName": "Stateful Energy Ribbon",
+    "group": "Dynamic Gradient & AI-Glow FX",
+    "category": "gradient-ai-glow-fx",
+    "keywords": [
+      "ribbon",
+      "energy-bar",
+      "hairline",
+      "status",
+      "ai-state",
+      "listening",
+      "thinking",
+      "streaming"
+    ],
+    "description": "Slim animated optical gradient hairline anchored to the top or bottom edge of a window, toolbar, or prompt card that dynamically shifts speed and token hue to communicate `idle`, `listening`, `thinking`, `streaming`, `success`, or `error` states.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Anchor with `position=\"top\"` or `position=\"bottom\"` inside relative toolbars, window titlebars, or chat headers to communicate real-time agent status without consuming vertical height."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid relying on ribbon color alone for critical errors; enable `showLabel` or pair with accessible text status."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Polite Live Status Announcements & Motion Pause",
+        "criterion": "1.4.1 Use of Color & 4.1.3 Status Messages",
+        "requirement": "Exposes `role=\"status\"` with `aria-live=\"polite\"` and descriptive `aria-label` (plus optional visible `showLabel`), and pauses animation cleanly under `paused`, `prefers-reduced-motion: reduce`, and `performanceMode=\"max\"`.",
+        "description": "Guarantees assistive technologies and colorblind users perceive state transitions immediately."
+      }
+    ],
+    "props": [
+      {
+        "name": "state",
+        "type": "'idle' | 'listening' | 'thinking' | 'streaming' | 'success' | 'error'",
+        "defaultValue": "'idle'",
+        "description": "Semantic operational state controlling flow cadence and palette."
+      },
+      {
+        "name": "position",
+        "type": "'top' | 'bottom' | 'inline'",
+        "defaultValue": "'inline'",
+        "description": "Edge anchoring mode."
+      },
+      {
+        "name": "thicknessPx",
+        "type": "number",
+        "defaultValue": "3",
+        "description": "Hairline height in pixels (clamped 2–8)."
+      },
+      {
+        "name": "showLabel",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Renders visible status text and state badge."
+      },
+      {
+        "name": "paused",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Pauses animated ribbon motion."
+      }
+    ]
+  },
+  {
+    "name": "RefractiveLensContainer",
+    "displayName": "Refractive Lens Container",
+    "group": "Shader & Optical FX",
+    "category": "shader-optical-fx",
+    "keywords": [
+      "lens",
+      "refraction",
+      "glass",
+      "distortion",
+      "webgl",
+      "glsl",
+      "ior",
+      "acrylic"
+    ],
+    "description": "WebGL/GLSL-backed optical lens container simulating thick polished acrylic or liquid glass refraction with configurable index of refraction (`ior`), focal radius, subtle optical magnification, Fresnel specular rim, and zero-stall CSS fallback.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Use around focal media cards, hero instrumentation tiles, or floating dock surfaces with realistic `ior` values (`1.33` liquid, `1.49` acrylic, `1.65` crystal)."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid excessive `magnification` above `1.08` on text-heavy panels so glyphs remain sharp and never clip horizontally."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Non-Destructive Optical Layer & Context-Loss Cleanup",
+        "criterion": "1.4.4 Resize Text & 2.3.3 Animation from Interactions",
+        "requirement": "Shader canvas and Fresnel rim carry `aria-hidden=\"true\"` and `pointer-events-none`, automatically pause offscreen or in `performanceMode=\"max\"`, and dispose GPU buffers cleanly on unmount.",
+        "description": "Preserves sharp DOM text accessibility and prevents WebGL memory leaks."
+      }
+    ],
+    "props": [
+      {
+        "name": "ior",
+        "type": "number",
+        "defaultValue": "1.49",
+        "description": "Index of refraction (clamped 1.0–2.4)."
+      },
+      {
+        "name": "lensRadius",
+        "type": "number",
+        "defaultValue": "0.52",
+        "description": "Normalized focal lens curvature radius (0.15–0.85)."
+      },
+      {
+        "name": "magnification",
+        "type": "number",
+        "defaultValue": "1.04",
+        "description": "Optical content magnification scale (1.0–1.25)."
+      },
+      {
+        "name": "intensity",
+        "type": "number",
+        "defaultValue": "0.9",
+        "description": "Refractive specular highlight intensity (0–1.5)."
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Shifts optical lens center toward the pointer."
+      },
+      {
+        "name": "disableWebGL",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Forces lightweight CSS optical lens fallback."
+      }
+    ]
+  },
+  {
+    "name": "ChromaticDispersionEdge",
+    "displayName": "Chromatic Dispersion Edge",
+    "group": "Shader & Optical FX",
+    "category": "shader-optical-fx",
+    "keywords": [
+      "chromatic",
+      "dispersion",
+      "prism",
+      "caustics",
+      "rainbow-edge",
+      "shader",
+      "border"
+    ],
+    "description": "Fragment-shader-backed perimeter edge layer that splits light along curved component borders into delicate RGB rainbow caustics matching Refractor optical glass physics, with automatic CSS chromatic ring fallback.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Wrap signature cards, showcase widgets, or tactile controls with subtle `dispersion={1.2–1.6}` for crisp optical bevel caustics."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid high dispersion values over dense small controls where prismatic edge bleed could distract from labels."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Decorative Spectral Border",
+        "criterion": "1.4.11 Non-text Contrast",
+        "requirement": "Dispersion canvas and ring carry `aria-hidden=\"true\"` and `pointer-events-none` without reducing foreground text contrast.",
+        "description": "Preserves clean keyboard focus outlines and crisp border boundaries across Light and Dark modes."
+      }
+    ],
+    "props": [
+      {
+        "name": "dispersion",
+        "type": "number",
+        "defaultValue": "1.35",
+        "description": "RGB channel separation spread factor (clamped 0.5–3.0)."
+      },
+      {
+        "name": "intensity",
+        "type": "number",
+        "defaultValue": "0.88",
+        "description": "Edge dispersion opacity intensity (0–1.5)."
+      },
+      {
+        "name": "animated",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Animates subtle prism wave phase along the perimeter."
+      },
+      {
+        "name": "disableWebGL",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Forces lightweight CSS caustic edge mode."
+      }
+    ]
+  },
+  {
+    "name": "CausticLightLayer",
+    "displayName": "Caustic Light Projection Layer",
+    "group": "Shader & Optical FX",
+    "category": "shader-optical-fx",
+    "keywords": [
+      "caustics",
+      "light-refraction",
+      "filaments",
+      "underwater",
+      "shader",
+      "hero",
+      "overlay"
+    ],
+    "description": "Animated underwater-style light-refraction projection layer powered by a WebGL caustic filament shader with smooth CSS fallback, casting delicate shifting bright filaments across cards, headers, or hero surfaces.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Layer subtly (`intensity={0.55–0.75}`) behind hero banners, splash cards, or audio/video workspace headers."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid pairing high `speed` values with dense data entry forms to maintain calm readability."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Reduced-Motion & Offscreen GPU Pause",
+        "criterion": "2.2.2 Pause, Stop, Hide & 2.3.3 Animation from Interactions",
+        "requirement": "All projection layers are `aria-hidden=\"true\"`, pause automatically offscreen and in hidden tabs, and honor `prefers-reduced-motion: reduce` and `performanceMode=\"max\"`.",
+        "description": "Delivers optical beauty with zero motion hazard or background GPU drain."
+      }
+    ],
+    "props": [
+      {
+        "name": "intensity",
+        "type": "number",
+        "defaultValue": "0.72",
+        "description": "Caustic filament brightness (0–1.5)."
+      },
+      {
+        "name": "scale",
+        "type": "number",
+        "defaultValue": "1.2",
+        "description": "Filament spatial density (0.5–3.0)."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "defaultValue": "1.0",
+        "description": "Refraction drift speed multiplier (0.1–3.0)."
+      },
+      {
+        "name": "animated",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Toggles continuous filament drift."
+      },
+      {
+        "name": "disableWebGL",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Forces lightweight CSS caustic filament mode."
+      }
+    ]
+  },
+  {
+    "name": "FrostedGrainOverlay",
+    "displayName": "Frosted Noise & Film-Grain Overlay",
+    "group": "Shader & Optical FX",
+    "category": "shader-optical-fx",
+    "keywords": [
+      "grain",
+      "noise",
+      "frosted",
+      "matte",
+      "anti-banding",
+      "film-grain",
+      "feTurbulence",
+      "shader"
+    ],
+    "description": "Procedural micro-grain shader paired with an SVG `feTurbulence` fallback layered over translucent surfaces to eliminate 8-bit gradient color banding and give glass panels a tactile, matte-etched physical feel.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Keep `animated={false}` (default) for static matte-etched frosted glass with zero continuous per-frame CPU/GPU overhead."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid opacity above `0.25` over small body text so letterforms remain crisp."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Purely Decorative Matte Texture",
+        "criterion": "1.4.3 Contrast (Minimum)",
+        "requirement": "Noise canvas and SVG carry `aria-hidden=\"true\"` and `pointer-events-none`, and clamp maximum opacity to `0.35` so foreground contrast remains unaffected.",
+        "description": "Maintains pointer pass-through and legibility across all optical and WebOS themes."
+      }
+    ],
+    "props": [
+      {
+        "name": "grainSize",
+        "type": "'fine' | 'medium' | 'coarse'",
+        "defaultValue": "'fine'",
+        "description": "Procedural noise spatial frequency."
+      },
+      {
+        "name": "opacity",
+        "type": "number",
+        "defaultValue": "0.14",
+        "description": "Micro-grain visibility (clamped 0.02–0.35)."
+      },
+      {
+        "name": "animated",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Enables subtle cinema film-grain temporal jitter."
+      },
+      {
+        "name": "disableWebGL",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Uses SVG feTurbulence micro-grain exclusively."
+      }
+    ]
+  },
+  {
+    "name": "LiquidRippleTrigger",
+    "displayName": "Liquid Ripple Trigger",
+    "group": "Shader & Optical FX",
+    "category": "shader-optical-fx",
+    "keywords": [
+      "ripple",
+      "shockwave",
+      "displacement",
+      "liquid",
+      "click-fx",
+      "shader",
+      "interactive"
+    ],
+    "description": "Interactive click- and keyboard-originated displacement shader wrapper sending a brief refractive shockwave ripple outward across buttons, cards, or optical workspace surfaces. Caps concurrent DOM rings (`maxRipples`) and cleans all timers and WebGL resources on unmount.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Wrap interactive tiles, primary CTA cards, or wallpaper triggers to provide tactile physical wave feedback on pointer press or keyboard activation."
+      },
+      {
+        "guidance": false,
+        "description": "Do not rely solely on visual ripples to confirm state changes; pair with accessible ARIA state or polite live feedback."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Keyboard Activation, IME Safety & Reduced-Motion Support",
+        "criterion": "2.1.1 Keyboard & 2.3.3 Animation from Interactions",
+        "requirement": "Responds to both pointer clicks and IME-safe Enter/Space keyboard events (`!e.nativeEvent.isComposing`), marks ripple rings `aria-hidden=\"true\"`, and disables wave animation under `prefers-reduced-motion: reduce`.",
+        "description": "Delivers consistent tactile feedback for pointer and keyboard users without leaking timers."
+      }
+    ],
+    "props": [
+      {
+        "name": "intensity",
+        "type": "number",
+        "defaultValue": "0.9",
+        "description": "Shockwave displacement luminosity (0–1.5)."
+      },
+      {
+        "name": "durationMs",
+        "type": "number",
+        "defaultValue": "750",
+        "description": "Wave duration in milliseconds (clamped 250–1800)."
+      },
+      {
+        "name": "maxRipples",
+        "type": "number",
+        "defaultValue": "3",
+        "description": "Maximum concurrent wave rings (clamped 1–4)."
+      },
+      {
+        "name": "onRipple",
+        "type": "(origin: RippleOriginEvent) => void",
+        "defaultValue": "undefined",
+        "description": "Fires with click/keyboard normalized coordinates on wave launch."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Disables wave launches."
+      }
+    ]
+  },
+  {
+    "name": "HolographicFoilSheen",
+    "displayName": "Holographic Foil Sheen",
+    "group": "Shader & Optical FX",
+    "category": "shader-optical-fx",
+    "keywords": [
+      "holographic",
+      "foil",
+      "dichroic",
+      "iridescent",
+      "sheen",
+      "badge",
+      "collectible",
+      "shader"
+    ],
+    "description": "Angle-reactive iridescent dichroic shader that sweeps pearlescent metallic highlights across badges, pro-plan tier cards, or collectible UI tiles on hover with gentle perspective tilt and zero-rerender pointer tracking.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Use on Pro/Enterprise tier badges, verification cards, or collectible workspace tiles with subtle `tiltDegrees={3–6}`."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid enabling perspective tilt on containers holding inline text inputs or scrollable data grids."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Decorative Foil Layer & Transform Reset",
+        "criterion": "1.4.3 Contrast (Minimum) & 2.3.3 Animation from Interactions",
+        "requirement": "Dichroic canvas and sheen overlays carry `aria-hidden=\"true\"` and `pointer-events-none`, and tilt resets cleanly on `pointerleave` and when `disabled` is true.",
+        "description": "Maintains text contrast and clean focus handling across all optical and multi-material themes."
+      }
+    ],
+    "props": [
+      {
+        "name": "preset",
+        "type": "'dichroic' | 'pearl' | 'titanium' | 'prism-gold'",
+        "defaultValue": "'dichroic'",
+        "description": "Metallic foil optical preset."
+      },
+      {
+        "name": "intensity",
+        "type": "number",
+        "defaultValue": "0.85",
+        "description": "Sheen brightness on hover (0–1.5)."
+      },
+      {
+        "name": "tiltDegrees",
+        "type": "number",
+        "defaultValue": "5",
+        "description": "Maximum 3D hover tilt angle in degrees (0–12)."
+      },
+      {
+        "name": "disableWebGL",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Uses CSS metallic sheen exclusively."
+      },
+      {
+        "name": "disabled",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Disables hover sheen and perspective tilt."
+      }
+    ]
+  },
+  {
+    "name": "MetaballFluidBackdrop",
+    "displayName": "Metaball Fluid Backdrop",
+    "group": "Shader & Optical FX",
+    "category": "shader-optical-fx",
+    "keywords": [
+      "metaball",
+      "fluid",
+      "sdf",
+      "orbs",
+      "backdrop",
+      "webgl",
+      "glsl",
+      "ambient"
+    ],
+    "description": "GPU-accelerated WebGL SDF metaball fluid surface where glowing optical orbs organically merge and separate behind frosted glass controls, with DPR capping, offscreen/hidden-tab pause, and pure CSS blurred-orb fallback.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Place behind frosted login cards, AI canvas welcome stages, or media hero headers to showcase real-time optical refraction."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid placing multiple animated metaball backdrops simultaneously inside long scrollable lists."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Reduced-Motion & Visibility-Paused Fluid",
+        "criterion": "2.2.2 Pause, Stop, Hide & 2.3.3 Animation from Interactions",
+        "requirement": "Shader canvas and fallback orbs carry `aria-hidden=\"true\"` and automatically halt animation offscreen, in hidden tabs, under `prefers-reduced-motion: reduce`, and in `performanceMode=\"max\"`.",
+        "description": "Protects battery life and vestibular comfort while maintaining full visual richness."
+      }
+    ],
+    "props": [
+      {
+        "name": "orbCount",
+        "type": "number",
+        "defaultValue": "3",
+        "description": "Number of merging optical orbs (clamped 2–5)."
+      },
+      {
+        "name": "intensity",
+        "type": "number",
+        "defaultValue": "0.85",
+        "description": "Fluid glow intensity (0–1.5)."
+      },
+      {
+        "name": "speed",
+        "type": "number",
+        "defaultValue": "1.0",
+        "description": "Fluid drift speed multiplier (0.2–2.5)."
+      },
+      {
+        "name": "interactive",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Attracts fluid metaballs gently toward pointer movement."
+      },
+      {
+        "name": "animated",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Toggles continuous organic merging."
+      }
+    ]
+  },
+  {
+    "name": "OpticalDepthVignette",
+    "displayName": "Optical Depth Vignette",
+    "group": "Shader & Optical FX",
+    "category": "shader-optical-fx",
+    "keywords": [
+      "vignette",
+      "depth-of-field",
+      "dof",
+      "blur",
+      "focus-management",
+      "modal-backdrop",
+      "shader"
+    ],
+    "description": "Focus-management depth-of-field optical vignette shader that progressively blurs and dims background windows or inactive canvas layers around a configurable focal aperture when a modal, spotlight, or approval gate opens. Registers global Escape dismiss strictly while `active` is true.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Wrap inactive workspace views in `children` and mount the active spotlight or approval card inside `foreground` to establish crisp optical depth hierarchy."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid animating blur radius every frame; toggle `active` to leverage GPU-accelerated transition states."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Guarded Escape Dismiss & Background Invisibility",
+        "criterion": "2.1.1 Keyboard & 4.1.2 Name, Role, Value",
+        "requirement": "Marks obscured background layers `aria-hidden=\"true\"` when `active && foreground`, attaches Escape dismissal strictly when `active && onDismiss`, and ignores IME composing Escape events.",
+        "description": "Prevents screen readers from wandering into dimmed background controls and eliminates orphaned key listeners."
+      }
+    ],
+    "props": [
+      {
+        "name": "active",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Activates background depth-of-field blur and vignette dimming."
+      },
+      {
+        "name": "focusX",
+        "type": "number",
+        "defaultValue": "0.5",
+        "description": "Normalized horizontal focal point (0–1)."
+      },
+      {
+        "name": "focusY",
+        "type": "number",
+        "defaultValue": "0.5",
+        "description": "Normalized vertical focal point (0–1)."
+      },
+      {
+        "name": "aperture",
+        "type": "number",
+        "defaultValue": "0.36",
+        "description": "Clear focal radius before falloff begins (0.15–0.85)."
+      },
+      {
+        "name": "blurPx",
+        "type": "number",
+        "defaultValue": "8",
+        "description": "Background depth-of-field blur radius in pixels (0–20)."
+      },
+      {
+        "name": "dimOpacity",
+        "type": "number",
+        "defaultValue": "0.58",
+        "description": "Outer optical dim opacity (0–0.85)."
+      },
+      {
+        "name": "onDismiss",
+        "type": "() => void",
+        "defaultValue": "undefined",
+        "description": "Called on Escape press or vignette veil click while active."
+      }
+    ]
+  },
+  {
+    "name": "RefractiveSkeleton",
+    "displayName": "Refractive Glass Skeleton",
+    "group": "Loaders, Skeletons & Data Transitions",
+    "category": "loaders-skeletons-transitions",
+    "keywords": [
+      "skeleton",
+      "loader",
+      "placeholder",
+      "shimmer",
+      "prismatic",
+      "glass",
+      "loading"
+    ],
+    "description": "Layout-matching frosted glass placeholder swept by an angled prismatic light wave across `card`, `profile`, `article`, `media`, and `metrics` presets, transitioning seamlessly to real children once `loading` completes.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Match `preset` and `lines` closely to the resolved content layout to prevent Cumulative Layout Shift (CLS) when data arrives."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid displaying raw empty containers while fetching; provide a descriptive `label` for assistive technology."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "ARIA Busy Status & Reduced-Motion Wave",
+        "criterion": "4.1.3 Status Messages & 2.3.3 Animation from Interactions",
+        "requirement": "Announces loading via `role=\"status\"`, `aria-busy=\"true\"`, and `aria-label`, while decorative shimmer blocks remain `aria-hidden=\"true\"` and pause automatically under `prefers-reduced-motion: reduce`.",
+        "description": "Communicates pending load state cleanly without flooding screen readers with empty nodes."
+      }
+    ],
+    "props": [
+      {
+        "name": "loading",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Shows frosted skeleton placeholder when true, or renders children when false."
+      },
+      {
+        "name": "preset",
+        "type": "'card' | 'profile' | 'article' | 'media' | 'metrics'",
+        "defaultValue": "'card'",
+        "description": "Structural placeholder geometry preset."
+      },
+      {
+        "name": "lines",
+        "type": "number",
+        "defaultValue": "3",
+        "description": "Number of placeholder text lines (clamped 1–8)."
+      },
+      {
+        "name": "animated",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Enables angled prismatic shimmer wave."
+      },
+      {
+        "name": "speedSeconds",
+        "type": "number",
+        "defaultValue": "1.85",
+        "description": "Light wave sweep duration in seconds (0.8–5)."
+      }
+    ]
+  },
+  {
+    "name": "OrbitalRingSpinner",
+    "displayName": "Orbital Ring Spinner",
+    "group": "Loaders, Skeletons & Data Transitions",
+    "category": "loaders-skeletons-transitions",
+    "keywords": [
+      "spinner",
+      "loader",
+      "orbital",
+      "ring",
+      "indeterminate",
+      "svg",
+      "prismatic"
+    ],
+    "description": "Sleek variable-stroke circular SVG loader with a trailing multi-hue token gradient tail and luminous leading orbital bead for indeterminate waits. Uses compositor-only rotation and pauses under `prefers-reduced-motion: reduce` and `performanceMode=\"max\"`.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Pair with a concise `label` (and `showLabel` for section loaders) so users know what operation is in progress."
+      },
+      {
+        "guidance": false,
+        "description": "For determinate operations with known completion percentage, prefer `SegmentedGlassProgress` instead of an indeterminate spinner."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Polite Status Region & Contained SVG",
+        "criterion": "4.1.3 Status Messages",
+        "requirement": "Exposes `role=\"status\"` and `aria-label`, marks the spinning `<svg>` `aria-hidden=\"true\"` with `viewBox=\"0 0 64 64\"` and `prism-contain-box`, and pauses smoothly when `paused` or reduced motion is enabled.",
+        "description": "Ensures assistive technology announces indeterminate activity reliably across devices."
+      }
+    ],
+    "props": [
+      {
+        "name": "size",
+        "type": "'sm' | 'md' | 'lg' | 'xl'",
+        "defaultValue": "'md'",
+        "description": "Spinner diameter preset (24px–76px)."
+      },
+      {
+        "name": "strokeWidth",
+        "type": "number",
+        "defaultValue": "4.5",
+        "description": "Ring stroke width in SVG units (clamped 2–8)."
+      },
+      {
+        "name": "speedSeconds",
+        "type": "number",
+        "defaultValue": "1.1",
+        "description": "Rotation duration in seconds (clamped 0.5–4)."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "defaultValue": "'Loading…'",
+        "description": "Accessible loading message."
+      },
+      {
+        "name": "showLabel",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Renders visible label text beside the orbital ring."
+      },
+      {
+        "name": "paused",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Pauses orbital spin."
+      }
+    ]
+  },
+  {
+    "name": "AiThinkingOrb",
+    "displayName": "AI Thinking Orb",
+    "group": "Loaders, Skeletons & Data Transitions",
+    "category": "loaders-skeletons-transitions",
+    "keywords": [
+      "ai",
+      "orb",
+      "blob",
+      "morphing",
+      "thinking",
+      "reasoning",
+      "loader",
+      "shader"
+    ],
+    "description": "Smooth organic liquid morphing sphere powered by a WebGL metaball/harmonic orb shader with optical CSS fallback that pulses, stretches, and shifts semantic hue across `idle`, `listening`, `thinking`, `generating`, and `complete` agent states.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Bind directly to live AI turn status so users can distinguish listening, reasoning, streaming generation, and completion at a glance."
+      },
+      {
+        "guidance": false,
+        "description": "Keep `showLabel` enabled or pair with clear live status text so meaning is never conveyed by motion or hue alone."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Polite Live Agent State & Reduced-Motion Support",
+        "criterion": "1.4.1 Use of Color & 4.1.3 Status Messages",
+        "requirement": "Uses `role=\"status\"`, `aria-live=\"polite\"`, descriptive `aria-label`, and halts organic morphing automatically on `state=\"complete\"`, `prefers-reduced-motion: reduce`, and `performanceMode=\"max\"`.",
+        "description": "Keeps agent presence accessible, calm, and battery-friendly across desktop and mobile."
+      }
+    ],
+    "props": [
+      {
+        "name": "state",
+        "type": "'idle' | 'listening' | 'thinking' | 'generating' | 'complete'",
+        "defaultValue": "'thinking'",
+        "description": "Agent lifecycle state modulating orb energy and hue."
+      },
+      {
+        "name": "sizePx",
+        "type": "number",
+        "defaultValue": "68",
+        "description": "Orb diameter in pixels (clamped 36–160)."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "defaultValue": "State default label",
+        "description": "Custom accessible status message."
+      },
+      {
+        "name": "showLabel",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Displays status caption and state pill beneath the orb."
+      },
+      {
+        "name": "disableWebGL",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Renders using pure CSS optical sphere fallback."
+      }
+    ]
+  },
+  {
+    "name": "SegmentedGlassProgress",
+    "displayName": "Segmented Glass Progress Bar",
+    "group": "Loaders, Skeletons & Data Transitions",
+    "category": "loaders-skeletons-transitions",
+    "keywords": [
+      "progress",
+      "segmented",
+      "liquid",
+      "glass",
+      "bar",
+      "percentage",
+      "determinate"
+    ],
+    "description": "Recessed frosted glass pill track filling with a glowing internal liquid gradient across discrete or continuous (`segments={1}`) glass capsules, complete with specular top highlights, optional percentage readouts, and an indeterminate prismatic sweep mode.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Use `segments={8–12}` for multi-phase uploads, shader builds, or quota gauges, or `segments={1}` for a sleek continuous liquid bar."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid passing unclamped values outside `0..max`; values are automatically normalized for ARIA accuracy."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "ARIA Progressbar Contract",
+        "criterion": "4.1.2 Name, Role, Value",
+        "requirement": "Emits `role=\"progressbar\"` with `aria-label`, `aria-valuemin`, `aria-valuemax`, `aria-valuenow` (omitted in `indeterminate` mode), and human-readable `aria-valuetext`.",
+        "description": "Gives screen readers exact determinate progress or indeterminate status semantics."
+      }
+    ],
+    "props": [
+      {
+        "name": "value",
+        "type": "number",
+        "defaultValue": "64",
+        "description": "Current completion value (0..max)."
+      },
+      {
+        "name": "max",
+        "type": "number",
+        "defaultValue": "100",
+        "description": "Maximum value representing 100%."
+      },
+      {
+        "name": "segments",
+        "type": "number",
+        "defaultValue": "10",
+        "description": "Number of pill segments (clamped 1–20)."
+      },
+      {
+        "name": "tone",
+        "type": "'prism' | 'emerald' | 'cobalt' | 'amber' | 'critical'",
+        "defaultValue": "'prism'",
+        "description": "Liquid fill gradient palette."
+      },
+      {
+        "name": "showPercentage",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Displays tabular percentage readout."
+      },
+      {
+        "name": "indeterminate",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Switches to indeterminate sweeping liquid mode."
+      }
+    ]
+  },
+  {
+    "name": "StreamingTokenReveal",
+    "displayName": "Streaming Token Reveal",
+    "group": "Loaders, Skeletons & Data Transitions",
+    "category": "loaders-skeletons-transitions",
+    "keywords": [
+      "streaming",
+      "typewriter",
+      "tokens",
+      "ai-chat",
+      "reveal",
+      "fade-in",
+      "progressive"
+    ],
+    "description": "Progressive text-rendering wrapper that fades in newly streamed tokens or markdown blocks with a soft leading prismatic caret edge instead of jarring block jumps. Supports incremental stream appending, tab-visibility pause, instant `skipAnimation` / `prefers-reduced-motion`, and completion callbacks.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Append incoming SSE/WebSocket chunks directly to the `text` prop while keeping `streaming={true}` until the stream terminates."
+      },
+      {
+        "guidance": false,
+        "description": "Never inject raw unescaped HTML into `text`; `StreamingTokenReveal` renders plain text tokens safely inside React text nodes."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Polite Live Region & Instant Reduced-Motion Reveal",
+        "criterion": "2.2.2 Pause, Stop, Hide & 4.1.3 Status Messages",
+        "requirement": "Wraps output in `role=\"region\"` with `aria-live=\"polite\"` and `aria-busy`, and reveals full text immediately without flicker when `prefers-reduced-motion: reduce` or `skipAnimation` is set.",
+        "description": "Prevents disorienting live-region churn while keeping streaming responses smooth and accessible."
+      }
+    ],
+    "props": [
+      {
+        "name": "text",
+        "type": "string",
+        "defaultValue": "required",
+        "description": "Text content or incrementally growing stream buffer."
+      },
+      {
+        "name": "streaming",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Keeps the soft leading edge caret visible while waiting for more tokens."
+      },
+      {
+        "name": "revealRateMs",
+        "type": "number",
+        "defaultValue": "45",
+        "description": "Milliseconds per token chunk reveal (clamped 16–300)."
+      },
+      {
+        "name": "chunkSize",
+        "type": "number",
+        "defaultValue": "1",
+        "description": "Words revealed per tick (clamped 1–6)."
+      },
+      {
+        "name": "skipAnimation",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Reveals all text immediately."
+      },
+      {
+        "name": "onRevealComplete",
+        "type": "() => void",
+        "defaultValue": "undefined",
+        "description": "Fired once buffered tokens finish revealing."
+      }
+    ]
+  },
+  {
+    "name": "DataGridRowShimmer",
+    "displayName": "Data-Grid Row Shimmer",
+    "group": "Loaders, Skeletons & Data Transitions",
+    "category": "loaders-skeletons-transitions",
+    "keywords": [
+      "table-skeleton",
+      "data-grid",
+      "row-shimmer",
+      "cascade",
+      "stagger",
+      "loading"
+    ],
+    "description": "Table-specific optical skeleton animating placeholder rows in a staggered top-to-bottom prismatic wave inside a mobile-safe `overflow-x-auto` container with automatic `content-visibility: auto` on `tbody > tr`, cross-fading cleanly into real table content once `loading` completes.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Pass the same `columns` array used by your production `DataTable` or `AdvancedDataGrid` to eliminate header shift when data resolves."
+      },
+      {
+        "guidance": false,
+        "description": "Keep `rows` aligned with the visible viewport fold (typically `5–10`) rather than rendering hundreds of skeleton rows."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Semantic Table Sections, Scroll Wrapper & ARIA Busy",
+        "criterion": "1.3.1 Info and Relationships & 4.1.3 Status Messages",
+        "requirement": "Wraps `<table>` with explicit `<thead>`/`<tbody>` sections inside `overflow-x-auto`, announces loading via `role=\"status\"` and `aria-busy=\"true\"`, and marks shimmer bars `aria-hidden=\"true\"`.",
+        "description": "Preserves zero-overflow mobile responsiveness and clean screen-reader structure."
+      }
+    ],
+    "props": [
+      {
+        "name": "loading",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Displays staggered skeleton rows when true, or renders children when false."
+      },
+      {
+        "name": "rows",
+        "type": "number",
+        "defaultValue": "5",
+        "description": "Number of placeholder rows (clamped 1–20)."
+      },
+      {
+        "name": "columns",
+        "type": "ReadonlyArray<string>",
+        "defaultValue": "['Artifact', 'Status', 'Latency', 'Updated']",
+        "description": "Header labels matching target table columns."
+      },
+      {
+        "name": "staggerMs",
+        "type": "number",
+        "defaultValue": "90",
+        "description": "Top-to-bottom stagger cascade delay per row in ms (0–240)."
+      },
+      {
+        "name": "animated",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Enables angled prismatic row wave."
+      }
+    ]
+  },
+  {
+    "name": "AcousticActivityBar",
+    "displayName": "Acoustic Activity Bar",
+    "group": "Loaders, Skeletons & Data Transitions",
+    "category": "loaders-skeletons-transitions",
+    "keywords": [
+      "acoustic",
+      "waveform",
+      "equalizer",
+      "voice",
+      "audio",
+      "streaming",
+      "telemetry"
+    ],
+    "description": "Compact row of animated vertical optical glass bars bouncing smoothly to indicate voice input, audio DSP processing, or live streaming telemetry. Supports autonomous animation or real-time normalized `levels` array binding.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Pass live Web Audio FFT buckets (`0..1`) via `levels` for real voice metering, or omit `levels` for zero-JS compositor-animated voice activity."
+      },
+      {
+        "guidance": false,
+        "description": "Set `active={false}` when microphone capture or audio streaming stops so bars rest cleanly with zero animation overhead."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Polite Activity Status & Reduced-Motion Safety",
+        "criterion": "2.3.3 Animation from Interactions & 4.1.3 Status Messages",
+        "requirement": "Exposes `role=\"status\"` and descriptive `aria-label`, hides decorative bars with `aria-hidden=\"true\"`, and halts animations cleanly when `active={false}`, `prefers-reduced-motion: reduce`, or `performanceMode=\"max\"`.",
+        "description": "Provides non-intrusive audio activity state for all users."
+      }
+    ],
+    "props": [
+      {
+        "name": "active",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Enables bouncing bar motion."
+      },
+      {
+        "name": "barCount",
+        "type": "number",
+        "defaultValue": "9",
+        "description": "Number of glass bars (clamped 3–24)."
+      },
+      {
+        "name": "levels",
+        "type": "ReadonlyArray<number>",
+        "defaultValue": "undefined",
+        "description": "Optional live normalized bar amplitudes [0..1]."
+      },
+      {
+        "name": "heightPx",
+        "type": "number",
+        "defaultValue": "32",
+        "description": "Maximum bar height in pixels (clamped 16–84)."
+      },
+      {
+        "name": "tone",
+        "type": "'prism' | 'emerald' | 'cobalt' | 'amber'",
+        "defaultValue": "'prism'",
+        "description": "Bar gradient palette."
+      },
+      {
+        "name": "showLabel",
+        "type": "boolean",
+        "defaultValue": "false",
+        "description": "Displays status label alongside the bars."
+      }
+    ]
+  },
+  {
+    "name": "PipelinePulseLoader",
+    "displayName": "Step-by-Step Pipeline Pulse",
+    "group": "Loaders, Skeletons & Data Transitions",
+    "category": "loaders-skeletons-transitions",
+    "keywords": [
+      "pipeline",
+      "stepper",
+      "pulse",
+      "light-packet",
+      "workflow",
+      "stages",
+      "loader"
+    ],
+    "description": "Connected node-and-track multi-stage loader where a glowing optical light packet travels smoothly from stage to stage, visually tracking multi-step API calls, shader builds, deployments, or background jobs.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Provide concise `label` and `detail` timing/status strings on each stage and optionally bind `onStageSelect` to inspect step logs."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid crowding more than 6–7 horizontal stages inside narrow mobile cards; keep stage labels concise for clean horizontal scrolling."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "Ordered Step Semantics & Polite Status Updates",
+        "criterion": "1.3.1 Info and Relationships & 4.1.3 Status Messages",
+        "requirement": "Renders stages inside a semantic `<ol>` with `aria-current=\"step\"` on the active node, `role=\"status\"` + `aria-live=\"polite\"`, and automatic light-packet pause under `prefers-reduced-motion: reduce`.",
+        "description": "Communicates multi-stage job progress reliably to assistive technologies."
+      }
+    ],
+    "props": [
+      {
+        "name": "stages",
+        "type": "ReadonlyArray<PipelineStageItem>",
+        "defaultValue": "4 default stages (DEFAULT_PIPELINE_STAGES)",
+        "description": "Ordered pipeline stages with `pending | active | completed | error` status."
+      },
+      {
+        "name": "pulseSpeedSeconds",
+        "type": "number",
+        "defaultValue": "1.5",
+        "description": "Packet travel duration in seconds (clamped 0.6–4)."
+      },
+      {
+        "name": "label",
+        "type": "string",
+        "defaultValue": "'Pipeline execution status'",
+        "description": "Accessible region description."
+      },
+      {
+        "name": "onStageSelect",
+        "type": "(stage: PipelineStageItem) => void",
+        "defaultValue": "undefined",
+        "description": "Optional handler invoked when clicking a stage node."
+      }
+    ]
+  },
+  {
+    "name": "ScanlineRadarSweep",
+    "displayName": "Scanline / Radar Sweep",
+    "group": "Loaders, Skeletons & Data Transitions",
+    "category": "loaders-skeletons-transitions",
+    "keywords": [
+      "scanline",
+      "radar",
+      "sweep",
+      "beam",
+      "security-scan",
+      "indexing",
+      "analysis",
+      "loader"
+    ],
+    "description": "Thin luminous optical beam sweeping across a preview canvas, image, or code block in `vertical`, `horizontal`, or `radar` modes to signal active analysis, indexing, or security scanning. Powered purely by compositor-thread transform animations with automatic reduced-motion and `performanceMode=\"max\"` pauses.",
+    "bestPractices": [
+      {
+        "guidance": true,
+        "description": "Wrap code blocks, uploaded media, or visual diffs with `active={isScanning}` so users clearly see live analysis progress without obscuring the underlying artifact."
+      },
+      {
+        "guidance": false,
+        "description": "Avoid leaving `active={true}` once indexing or scanning finishes; toggle `active={false}` to remove the overlay cleanly."
+      }
+    ],
+    "accessibility": [
+      {
+        "name": "ARIA Busy Region & Polite Scan Status",
+        "criterion": "2.3.3 Animation from Interactions & 4.1.3 Status Messages",
+        "requirement": "Marks the scanned region `aria-busy={active}`, announces status via `role=\"status\" aria-live=\"polite\"`, marks the beam `aria-hidden=\"true\"`, and disables sweep animation under `prefers-reduced-motion: reduce`.",
+        "description": "Keeps background analysis clearly communicated without blocking interaction or violating motion preferences."
+      }
+    ],
+    "props": [
+      {
+        "name": "active",
+        "type": "boolean",
+        "defaultValue": "true",
+        "description": "Toggles the active scanning beam and status pill."
+      },
+      {
+        "name": "mode",
+        "type": "'vertical' | 'horizontal' | 'radar'",
+        "defaultValue": "'vertical'",
+        "description": "Beam trajectory geometry."
+      },
+      {
+        "name": "tone",
+        "type": "'cyan' | 'prism' | 'emerald' | 'amber'",
+        "defaultValue": "'cyan'",
+        "description": "Semantic optical beam hue."
+      },
+      {
+        "name": "speedSeconds",
+        "type": "number",
+        "defaultValue": "2.2",
+        "description": "Beam sweep cycle duration in seconds (0.8–8)."
+      },
+      {
+        "name": "statusLabel",
+        "type": "string",
+        "defaultValue": "'Scanning optical surface…'",
+        "description": "Polite status caption displayed while active."
+      }
+    ]
   }
 ]

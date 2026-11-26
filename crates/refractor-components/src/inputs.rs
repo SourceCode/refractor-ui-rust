@@ -1,13 +1,14 @@
 //! Form Inputs & Selection Controls (Category 2 of 55).
 
 use gpui::{
-    App, IntoElement, ParentElement, RenderOnce, SharedString, Styled, Window, div, px,
+    App, FontWeight, IntoElement, ParentElement, RenderOnce, SharedString, Styled, Window, div, px,
+    relative,
 };
 use refractor_core::{
-    BaseProps, SurfaceVariant, active_theme, color_str_to_hsla, optical_surface,
+    BaseProps, SurfaceVariant, active_theme, color_str_to_hsla, optical_surface, rgb_to_hsla,
 };
 use refractor_security::clamp_f32;
-use refractor_tokens::RgbColor;
+use refractor_tokens::{RgbColor, ThemeMode};
 
 /// Recessed optical glass single-line text input well.
 #[derive(Debug, Clone, IntoElement)]
@@ -42,29 +43,41 @@ impl TextInput {
 impl RenderOnce for TextInput {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
-        let text_primary = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(21, 30, 44));
-        let text_muted = color_str_to_hsla(&theme.palette.text.secondary, RgbColor::new(100, 116, 139));
+        let text_primary = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(24, 32, 44));
+        let text_muted =
+            color_str_to_hsla(&theme.palette.text.secondary, RgbColor::new(75, 88, 108));
         let is_empty = self.value.is_empty();
         let shown = if is_empty { self.placeholder } else { self.value };
 
-        let mut wrapper = div().flex().flex_col().gap(px(6.0));
+        let mut wrapper = div().w_full().flex().flex_col();
         if let Some(lbl) = self.label {
             wrapper = wrapper.child(
                 div()
                     .text_size(px(12.0))
-                    .text_color(text_muted)
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .text_color(text_primary)
+                    .mb(px(6.0))
+                    .ml(px(4.0))
                     .child(lbl),
             );
         }
         wrapper.child(
-            optical_surface(&theme, SurfaceVariant::Well)
-                .h(px(40.0))
-                .px(px(14.0))
-                .flex()
-                .items_center()
-                .text_size(px(14.0))
-                .text_color(if is_empty { text_muted } else { text_primary })
-                .child(shown),
+            optical_surface(&theme, SurfaceVariant::Crystal)
+                .w_full()
+                .rounded(px(9999.0))
+                .p(px(4.0))
+                .child(
+                    optical_surface(&theme, SurfaceVariant::Well)
+                        .w_full()
+                        .rounded(px(9999.0))
+                        .h(px(44.0))
+                        .px(px(16.0))
+                        .flex()
+                        .items_center()
+                        .text_size(px(14.0))
+                        .text_color(if is_empty { text_muted } else { text_primary })
+                        .child(shown),
+                ),
         )
     }
 }
@@ -102,27 +115,36 @@ impl TextArea {
 impl RenderOnce for TextArea {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
-        let text_primary = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(21, 30, 44));
-        let min_h = f32::from(self.rows.max(2)) * 22.0 + 16.0;
-        let mut wrapper = div().flex().flex_col().gap(px(6.0));
+        let text_primary = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(24, 32, 44));
+        let min_h = (f32::from(self.rows.max(2)) * 22.0 + 48.0).max(104.0);
+        let mut wrapper = div().w_full().flex().flex_col();
         if let Some(lbl) = self.label {
             wrapper = wrapper.child(
                 div()
                     .text_size(px(12.0))
-                    .text_color(color_str_to_hsla(
-                        &theme.palette.text.secondary,
-                        RgbColor::new(100, 116, 139),
-                    ))
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .text_color(text_primary)
+                    .mb(px(6.0))
+                    .px(px(4.0))
                     .child(lbl),
             );
         }
         wrapper.child(
-            optical_surface(&theme, SurfaceVariant::Well)
-                .min_h(px(min_h))
-                .p(px(12.0))
-                .text_size(px(14.0))
-                .text_color(text_primary)
-                .child(self.value),
+            optical_surface(&theme, SurfaceVariant::Crystal)
+                .w_full()
+                .rounded(px(22.0))
+                .p(px(6.0))
+                .child(
+                    optical_surface(&theme, SurfaceVariant::Well)
+                        .w_full()
+                        .rounded(px(17.0))
+                        .min_h(px(min_h))
+                        .px(px(16.0))
+                        .py(px(12.0))
+                        .text_size(px(14.0))
+                        .text_color(text_primary)
+                        .child(self.value),
+                ),
         )
     }
 }
@@ -160,13 +182,15 @@ impl RenderOnce for ToggleSwitch {
         };
 
         let thumb = optical_surface(&theme, SurfaceVariant::Thumb)
-            .w(px(26.0))
-            .h(px(26.0));
+            .w(px(34.0))
+            .h(px(34.0))
+            .rounded(px(9999.0));
 
         let mut track = optical_surface(&theme, track_variant)
-            .w(px(60.0))
-            .h(px(34.0))
-            .p(px(3.0))
+            .w(px(78.0))
+            .h(px(42.0))
+            .rounded(px(9999.0))
+            .p(px(4.0))
             .flex()
             .flex_row()
             .items_center();
@@ -181,16 +205,17 @@ impl RenderOnce for ToggleSwitch {
             .flex()
             .flex_row()
             .items_center()
-            .gap(px(10.0))
+            .gap(px(12.0))
             .child(track.child(thumb));
 
         if let Some(lbl) = self.label {
             row = row.child(
                 div()
                     .text_size(px(14.0))
+                    .font_weight(FontWeight::MEDIUM)
                     .text_color(color_str_to_hsla(
                         &theme.palette.text.primary,
-                        RgbColor::new(21, 30, 44),
+                        RgbColor::new(24, 32, 44),
                     ))
                     .child(lbl),
             );
@@ -223,23 +248,24 @@ impl RenderOnce for Checkbox {
         let box_variant = if self.checked {
             SurfaceVariant::Emerald
         } else {
-            SurfaceVariant::Well
+            SurfaceVariant::Crystal
         };
         let check_glyph = if self.checked { "✓" } else { "" };
         div()
             .flex()
             .flex_row()
             .items_center()
-            .gap(px(8.0))
+            .gap(px(12.0))
             .child(
                 optical_surface(&theme, box_variant)
-                    .w(px(20.0))
-                    .h(px(20.0))
-                    .rounded(px(6.0))
+                    .w(px(28.0))
+                    .h(px(28.0))
+                    .rounded(px(9.0))
                     .flex()
                     .items_center()
                     .justify_center()
-                    .text_size(px(12.0))
+                    .text_size(px(14.0))
+                    .font_weight(FontWeight::BOLD)
                     .text_color(color_str_to_hsla(
                         &theme.palette.success.contrast_text,
                         RgbColor::new(255, 255, 255),
@@ -249,9 +275,10 @@ impl RenderOnce for Checkbox {
             .child(
                 div()
                     .text_size(px(14.0))
+                    .font_weight(FontWeight::MEDIUM)
                     .text_color(color_str_to_hsla(
                         &theme.palette.text.primary,
-                        RgbColor::new(21, 30, 44),
+                        RgbColor::new(24, 32, 44),
                     ))
                     .child(self.label),
             )
@@ -279,30 +306,41 @@ impl RadioGroup {
 impl RenderOnce for RadioGroup {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
-        let text_primary = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(21, 30, 44));
-        let mut col = div().flex().flex_col().gap(px(8.0));
+        let text_primary = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(24, 32, 44));
+        let mut col = div().flex().flex_col().gap(px(10.0));
         for (idx, opt) in self.options.into_iter().enumerate() {
             let active = idx == self.selected;
-            let dot = optical_surface(
-                &theme,
-                if active {
-                    SurfaceVariant::PrimaryButton
-                } else {
-                    SurfaceVariant::Well
-                },
-            )
-            .w(px(18.0))
-            .h(px(18.0))
-            .rounded(px(999.0));
+            let mut ring = optical_surface(&theme, SurfaceVariant::Crystal)
+                .w(px(24.0))
+                .h(px(24.0))
+                .rounded(px(9999.0))
+                .flex()
+                .items_center()
+                .justify_center();
+            if active {
+                ring = ring.child(
+                    optical_surface(&theme, SurfaceVariant::Emerald)
+                        .w(px(14.0))
+                        .h(px(14.0))
+                        .rounded(px(9999.0)),
+                );
+            }
 
             col = col.child(
                 div()
                     .flex()
                     .flex_row()
                     .items_center()
-                    .gap(px(8.0))
-                    .child(dot)
-                    .child(div().text_size(px(14.0)).text_color(text_primary).child(opt)),
+                    .gap(px(12.0))
+                    .p(px(10.0))
+                    .child(ring)
+                    .child(
+                        div()
+                            .text_size(px(14.0))
+                            .font_weight(FontWeight::MEDIUM)
+                            .text_color(text_primary)
+                            .child(opt),
+                    ),
             );
         }
         col
@@ -351,50 +389,66 @@ impl RenderOnce for RangeSlider {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
         let pct = self.normalized_fraction();
-        let track_w = 220.0_f32;
-        let fill_px = (track_w * pct).clamp(0.0, track_w);
-        let thumb_size = 20.0_f32;
-        let thumb_left = (fill_px - thumb_size * 0.5).clamp(0.0, track_w - thumb_size);
+        let safe_val = clamp_f32(self.value, self.min, self.max, self.min);
+        let text_primary = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(51, 65, 85));
 
-        let mut col = div().flex().flex_col().gap(px(6.0));
+        let mut col = div().w_full().flex().flex_col();
         if let Some(lbl) = self.label {
             col = col.child(
                 div()
-                    .text_size(px(12.0))
-                    .text_color(color_str_to_hsla(
-                        &theme.palette.text.secondary,
-                        RgbColor::new(100, 116, 139),
-                    ))
-                    .child(lbl),
+                    .w_full()
+                    .flex()
+                    .flex_row()
+                    .items_center()
+                    .justify_between()
+                    .mb(px(8.0))
+                    .child(
+                        div()
+                            .text_size(px(12.0))
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .text_color(text_primary)
+                            .child(lbl),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(12.0))
+                            .font_weight(FontWeight::MEDIUM)
+                            .text_color(text_primary)
+                            .child(format!("{}%", safe_val.round() as i32)),
+                    ),
             );
         }
 
         let track = div()
             .relative()
-            .w(px(track_w))
-            .h(px(22.0))
+            .w_full()
+            .h(px(32.0))
             .flex()
             .items_center()
             .child(
-                optical_surface(&theme, SurfaceVariant::Well)
-                    .w(px(track_w))
-                    .h(px(10.0))
-                    .rounded(px(999.0))
+                optical_surface(&theme, SurfaceVariant::Crystal)
+                    .w_full()
+                    .h(px(14.0))
+                    .rounded(px(9999.0))
+                    .p(px(2.0))
+                    .overflow_hidden()
                     .child(
-                        optical_surface(&theme, SurfaceVariant::PrimaryButton)
-                            .w(px(fill_px))
-                            .h(px(8.0))
-                            .rounded(px(999.0)),
+                        optical_surface(&theme, SurfaceVariant::Emerald)
+                            .border_0()
+                            .w(relative(pct))
+                            .h_full()
+                            .rounded(px(9999.0)),
                     ),
             )
             .child(
                 optical_surface(&theme, SurfaceVariant::Thumb)
                     .absolute()
-                    .left(px(thumb_left))
-                    .top(px(1.0))
-                    .w(px(thumb_size))
-                    .h(px(thumb_size))
-                    .rounded(px(999.0)),
+                    .left(relative(pct))
+                    .ml(px(-12.0))
+                    .top(px(4.0))
+                    .w(px(24.0))
+                    .h(px(24.0))
+                    .rounded(px(9999.0)),
             );
 
         col.child(track)
@@ -404,6 +458,7 @@ impl RenderOnce for RangeSlider {
 /// Optical glass dropdown select trigger.
 #[derive(Debug, Clone, IntoElement)]
 pub struct DropdownSelect {
+    pub label: Option<SharedString>,
     pub selected_label: SharedString,
     pub base: BaseProps,
 }
@@ -411,27 +466,106 @@ pub struct DropdownSelect {
 impl DropdownSelect {
     pub fn new(selected_label: impl Into<SharedString>) -> Self {
         Self {
+            label: None,
             selected_label: selected_label.into(),
             base: BaseProps::new(),
         }
+    }
+
+    pub fn label(mut self, label: impl Into<SharedString>) -> Self {
+        self.label = Some(label.into());
+        self
     }
 }
 
 impl RenderOnce for DropdownSelect {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
-        let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(21, 30, 44));
-        optical_surface(&theme, SurfaceVariant::Well)
-            .h(px(40.0))
-            .px(px(14.0))
-            .flex()
-            .flex_row()
-            .items_center()
-            .justify_between()
-            .gap(px(12.0))
-            .text_size(px(14.0))
-            .text_color(fg)
-            .child(self.selected_label)
-            .child("▾")
+        let is_dark = theme.palette.mode == ThemeMode::Dark;
+        let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(24, 32, 44));
+        let tray_bg = if is_dark {
+            rgb_to_hsla(RgbColor::new(255, 255, 255), 0.04)
+        } else {
+            rgb_to_hsla(RgbColor::new(15, 23, 42), 0.03)
+        };
+        let tray_border = if is_dark {
+            rgb_to_hsla(RgbColor::new(255, 255, 255), 0.10)
+        } else {
+            rgb_to_hsla(RgbColor::new(255, 255, 255), 0.50)
+        };
+
+        let mut wrapper = div().w_full().flex().flex_col();
+        if let Some(lbl) = self.label {
+            wrapper = wrapper.child(
+                div()
+                    .text_size(px(12.0))
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .text_color(fg)
+                    .mb(px(6.0))
+                    .ml(px(4.0))
+                    .child(lbl),
+            );
+        }
+
+        wrapper.child(
+            optical_surface(&theme, SurfaceVariant::Crystal)
+                .w_full()
+                .h(px(56.0))
+                .rounded(px(9999.0))
+                .pl(px(20.0))
+                .pr(px(10.0))
+                .flex()
+                .flex_row()
+                .items_center()
+                .justify_between()
+                .gap(px(12.0))
+                .child(
+                    div()
+                        .flex()
+                        .flex_row()
+                        .items_center()
+                        .gap(px(12.0))
+                        .child(
+                            div()
+                                .text_size(px(18.0))
+                                .font_weight(FontWeight::MEDIUM)
+                                .text_color(fg)
+                                .child("C"),
+                        )
+                        .child(
+                            div()
+                                .text_size(px(15.0))
+                                .font_weight(FontWeight::MEDIUM)
+                                .text_color(fg)
+                                .child(self.selected_label),
+                        ),
+                )
+                .child(
+                    div()
+                        .h(px(40.0))
+                        .pl(px(20.0))
+                        .pr(px(6.0))
+                        .rounded(px(9999.0))
+                        .bg(tray_bg)
+                        .border(px(1.0))
+                        .border_color(tray_border)
+                        .flex()
+                        .items_center()
+                        .justify_end()
+                        .child(
+                            optical_surface(&theme, SurfaceVariant::Emerald)
+                                .w(px(28.0))
+                                .h(px(28.0))
+                                .rounded(px(8.0))
+                                .flex()
+                                .items_center()
+                                .justify_center()
+                                .text_size(px(13.0))
+                                .font_weight(FontWeight::BOLD)
+                                .text_color(rgb_to_hsla(RgbColor::new(255, 255, 255), 1.0))
+                                .child("✓"),
+                        ),
+                ),
+        )
     }
 }

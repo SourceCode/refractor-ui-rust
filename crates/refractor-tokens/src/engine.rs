@@ -9,8 +9,8 @@ use crate::types::{
     ComponentStyleOverride, DefinePrismThemeInput, DefinedPrismTheme, PaletteColorInput,
     PrismTheme, PrismThemeOptions, RefractionIntensity, ThemeBackground, ThemeCollectionCategory,
     ThemeControlsLayout, ThemeEditorColors, ThemeFxConfig, ThemeMaterial, ThemeMode,
-    ThemeMotionConfig, ThemeOptics, ThemeOverlayFx, ThemePalette, ThemeShape, ThemeTextColors,
-    ThemeTypography, TypographyScale,
+    ThemeMotionConfig, ThemeOptics, ThemeOverlayFx, ThemePalette, ThemePerformanceMode, ThemeShape,
+    ThemeTextColors, ThemeTypography, TypographyScale,
 };
 
 fn refraction_multiplier(refraction: RefractionIntensity) -> f32 {
@@ -127,10 +127,14 @@ pub fn create_prism_theme(options: PrismThemeOptions) -> PrismTheme {
     );
     let mult = refraction_multiplier(refraction);
 
+    let performance_mode = options
+        .performance_mode
+        .unwrap_or(ThemePerformanceMode::Balanced);
     let optics = ThemeOptics {
         refraction,
+        performance_mode,
         blur_px,
-        slab_blur_px: clamp_f32(blur_px * 1.33, 0.0, 64.0, 24.0),
+        slab_blur_px: clamp_f32((blur_px * 1.167).round(), 0.0, 48.0, 14.0),
         caustic_opacity: clamp_f32(0.55 * mult, 0.0, 1.0, 0.55),
         specular_opacity: clamp_f32(0.75 * mult, 0.0, 1.0, 0.75),
         caustic_warm_rgb: format_rgb_triplet(primary.rgb),
@@ -386,6 +390,9 @@ fn merge_options(base: &mut PrismThemeOptions, overlay: PrismThemeOptions) {
     }
     if overlay.refraction.is_some() {
         base.refraction = overlay.refraction;
+    }
+    if overlay.performance_mode.is_some() {
+        base.performance_mode = overlay.performance_mode;
     }
     if overlay.blur_px.is_some() {
         base.blur_px = overlay.blur_px;

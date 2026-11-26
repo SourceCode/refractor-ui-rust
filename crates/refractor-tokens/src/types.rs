@@ -15,6 +15,47 @@ pub enum ThemeMode {
     Dark,
 }
 
+/// Three-tier GPU performance profile ported from `refractor-ui` v1.48.0+.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum ThemePerformanceMode {
+    /// Full optical glass fidelity (12px/14px blur, multi-layer caustics, specular arcs, FX).
+    #[default]
+    Balanced,
+    /// Reduced GPU fill-rate (50% blur radius, single fast elevation shadow, crisp specular rim).
+    High,
+    /// Maximum frame throughput (zero blur, single hairline shadow, animations & FX paused).
+    Max,
+}
+
+impl ThemePerformanceMode {
+    pub const ALL: [Self; 3] = [Self::Balanced, Self::High, Self::Max];
+
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Balanced => "balanced",
+            Self::High => "high",
+            Self::Max => "max",
+        }
+    }
+
+    pub const fn blur_scale(self) -> f32 {
+        match self {
+            Self::Balanced => 1.0,
+            Self::High => 0.5,
+            Self::Max => 0.0,
+        }
+    }
+
+    pub const fn allows_animations(self) -> bool {
+        !matches!(self, Self::Max)
+    }
+
+    pub const fn allows_fx_overlays(self) -> bool {
+        !matches!(self, Self::Max)
+    }
+}
+
 /// Optical refraction intensity level.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Default, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
@@ -87,8 +128,8 @@ impl ThemeMaterial {
 
     pub const fn default_blur_px(self) -> f32 {
         match self {
-            Self::Glass | Self::Mica | Self::Resin => 18.0,
-            Self::Chrome => 14.0,
+            Self::Glass | Self::Mica | Self::Resin => 12.0,
+            Self::Chrome => 10.0,
             Self::Neon => 4.0,
             _ => 0.0,
         }
@@ -365,6 +406,8 @@ pub struct ThemeShape {
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct ThemeOptics {
     pub refraction: RefractionIntensity,
+    #[serde(default)]
+    pub performance_mode: ThemePerformanceMode,
     pub blur_px: f32,
     pub slab_blur_px: f32,
     pub caustic_opacity: f32,
@@ -372,6 +415,18 @@ pub struct ThemeOptics {
     pub caustic_warm_rgb: String,
     pub caustic_cool_rgb: String,
     pub specular_highlight: bool,
+}
+
+impl ThemeOptics {
+    /// Returns the effective blur radius scaled by `performance_mode`.
+    pub fn effective_blur_px(&self) -> f32 {
+        (self.blur_px * self.performance_mode.blur_scale()).max(0.0)
+    }
+
+    /// Returns the effective slab blur radius scaled by `performance_mode`.
+    pub fn effective_slab_blur_px(&self) -> f32 {
+        (self.slab_blur_px * self.performance_mode.blur_scale()).max(0.0)
+    }
 }
 
 /// Complete resolved Refractor Multi-Material & Optical Glass Theme.
@@ -417,6 +472,7 @@ pub struct PrismThemeOptions {
     pub border_radius_px: Option<f32>,
     pub slab_radius_px: Option<f32>,
     pub refraction: Option<RefractionIntensity>,
+    pub performance_mode: Option<ThemePerformanceMode>,
     pub blur_px: Option<f32>,
     pub specular_highlight: Option<bool>,
     pub fx: Option<ThemeFxConfig>,

@@ -15,13 +15,16 @@ use gpui::{
     Styled, Window, div, px,
 };
 use refractor_components::{
-    AdvancedDataGrid, ApprovalGateCard, ButtonSize, CandlestickOhlcChart, CodeEditor, ColorPicker,
+    AcousticActivityBar, AdvancedDataGrid, AiFocusRing, AiOrbState, AiThinkingOrb,
+    ApprovalGateCard, ButtonSize, CandlestickOhlcChart, CodeEditor, ColorPicker,
     ContextTokenMeter, ControlCenterGrid, DigitalLedReadout, DistributedTraceWaterfall,
-    DualPaneCommander, FileTransferQueue, MatrixHeatmap, MultiTrackTimeline,
-    OpticalMaterialInspector, ParametricEqGraph, PasswordStrengthMeter, PrimaryButton,
-    RadialGauge, RatingControl, RotaryDial, ScatterBubblePlot, SecondaryButton,
-    StepSequencerMatrix, ThermostatDial, ThreeWayColorWheels, TopNavBar, UptimeStatusBar,
-    VuPeakLevelMeter, WindowTitlebar, WorkspaceStatusBar,
+    DualPaneCommander, EnergyRibbonState, FileTransferQueue, HolographicFoilSheen, MatrixHeatmap,
+    MultiTrackTimeline, OpticalMaterialInspector, ParametricEqGraph, PasswordStrengthMeter,
+    PipelinePulseLoader, PrimaryButton, PrismaticCursorHalo, RadialGauge, RatingControl,
+    RefractiveLensContainer, RotaryDial, ScatterBubblePlot, SecondaryButton,
+    SegmentedGlassProgress, StatefulEnergyRibbon, StepSequencerMatrix, ThermostatDial,
+    ThreeWayColorWheels, TopNavBar, UptimeStatusBar, VuPeakLevelMeter, WindowTitlebar,
+    WorkspaceStatusBar,
 };
 use refractor_core::{AppHost, OpticalBackdrop, RefractorApp, Task, run_app};
 use refractor_themes::resolve_theme_by_id;
@@ -121,7 +124,7 @@ impl RefractorApp for StudioShowcase {
                     .flex_col()
                     .gap(px(10.0))
                     .child(WindowTitlebar::new(format!(
-                        "Refractor UI for Rust — 314 Bespoke Native GPUI Components ({})",
+                        "Refractor UI for Rust — 339 Bespoke Native GPUI Components ({})",
                         theme.display_name
                     )))
                     .child(
@@ -132,7 +135,7 @@ impl RefractorApp for StudioShowcase {
                             .gap(px(10.0))
                             .child(
                                 TopNavBar::new("Refractor Studio Showcase")
-                                    .subtitle("All 7 Bespoke Domain Suites • Zero Macro Shells • GPUI 0.2.2"),
+                                    .subtitle("All 10 Bespoke Domain Suites • 339 Native GPUI Components • GPUI 0.2.2"),
                             )
                             .child(theme_row)
                             // Row 1: GPU-Canvas Charts (Suite 2)
@@ -206,6 +209,31 @@ impl RefractorApp for StudioShowcase {
                                     .child(div().flex_1().min_w_0().child(RatingControl::new()))
                                     .child(div().flex_1().min_w_0().child(RotaryDial::new()))
                                     .child(div().flex_1().min_w_0().child(ThermostatDial::new())),
+                            )
+                            // Row 6: Dynamic Gradient & AI-Glow FX, Shader FX & Loaders (Suites 8-10)
+                            .child(
+                                div()
+                                    .w_full()
+                                    .flex()
+                                    .flex_row()
+                                    .gap(px(10.0))
+                                    .child(div().flex_1().min_w_0().child(PrismaticCursorHalo::new()))
+                                    .child(div().flex_1().min_w_0().child(AiFocusRing::new("Optical AI Prompt").active(true).processing(true)))
+                                    .child(div().flex_1().min_w_0().child(RefractiveLensContainer::new("Optical Lens")))
+                                    .child(div().flex_1().min_w_0().child(HolographicFoilSheen::new("Dichroic Foil"))),
+                            )
+                            .child(
+                                div()
+                                    .w_full()
+                                    .flex()
+                                    .flex_row()
+                                    .items_center()
+                                    .gap(px(10.0))
+                                    .child(AiThinkingOrb::new(AiOrbState::Thinking).size_px(44.0))
+                                    .child(div().flex_1().min_w_0().child(SegmentedGlassProgress::new(72.0)))
+                                    .child(AcousticActivityBar::new())
+                                    .child(div().flex_1().min_w_0().child(PipelinePulseLoader::new()))
+                                    .child(div().w(px(140.0)).child(StatefulEnergyRibbon::new(EnergyRibbonState::Streaming).show_label(true))),
                             ),
                     ),
             )
@@ -216,7 +244,7 @@ impl RefractorApp for StudioShowcase {
                     theme.material.as_str(),
                     theme.fx.wallpaper_overlay.as_str()
                 ),
-                "Refractor UI v2.0.0-parity • 314 Bespoke Native GPUI Components",
+                "Refractor UI v1.1.0 • 339 Bespoke Native GPUI Components",
             ))
             .into_any_element()
     }

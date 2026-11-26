@@ -17,6 +17,7 @@ use gpui::{
 use refractor_security::clamp_f32;
 use refractor_tokens::{
     ComponentStyleOverride, PrismTheme, RefractionIntensity, RgbColor, ThemeMaterial, ThemeMode,
+    ThemePerformanceMode,
 };
 
 use crate::gpui_bridge::{color_str_to_hsla, rgb_to_hsla};
@@ -64,22 +65,38 @@ fn lerp_rgb(start: RgbColor, end: RgbColor, ratio: f32) -> RgbColor {
     )
 }
 
-/// Effective caustic intensity multiplier derived from `theme.optics.refraction` and `caustic_opacity`.
+/// Effective caustic intensity multiplier derived from `theme.optics.refraction`,
+/// `caustic_opacity`, and `performance_mode`.
 fn caustic_scale(theme: &PrismTheme) -> f32 {
+    let perf = match theme.optics.performance_mode {
+        ThemePerformanceMode::Balanced => 1.0,
+        ThemePerformanceMode::High => 0.55,
+        ThemePerformanceMode::Max => 0.0,
+    };
+    if perf <= 0.0 {
+        return 0.0;
+    }
     let base = match theme.optics.refraction {
         RefractionIntensity::Subtle => 0.45,
         RefractionIntensity::Standard => 1.0,
         RefractionIntensity::Vivid => 1.35,
     };
-    clamp_f32(base * theme.optics.caustic_opacity, 0.0, 1.5, 1.0)
+    clamp_f32(base * theme.optics.caustic_opacity * perf, 0.0, 1.5, 1.0)
 }
 
 /// Effective specular highlight opacity multiplier.
 fn specular_scale(theme: &PrismTheme) -> f32 {
-    if !theme.optics.specular_highlight {
+    if !theme.optics.specular_highlight
+        || theme.optics.performance_mode == ThemePerformanceMode::Max
+    {
         return 0.0;
     }
-    clamp_f32(theme.optics.specular_opacity, 0.0, 1.2, 1.0)
+    let perf = if theme.optics.performance_mode == ThemePerformanceMode::High {
+        0.75
+    } else {
+        1.0
+    };
+    clamp_f32(theme.optics.specular_opacity * perf, 0.0, 1.2, 1.0)
 }
 
 /// Computes the surface corner radius respecting material sharpness and variant hierarchy.
@@ -115,6 +132,11 @@ pub fn optical_surface(theme: &PrismTheme, variant: SurfaceVariant) -> Div {
     let border_w = match theme.material {
         ThemeMaterial::Neumorphic => 0.0,
         ThemeMaterial::Brutalist | ThemeMaterial::Pixel => theme.fx.border_width_px.max(2.0),
+        ThemeMaterial::Glass => match variant {
+            SurfaceVariant::PrimaryButton => 0.0,
+            SurfaceVariant::Emerald => 1.5,
+            _ => theme.fx.border_width_px.max(1.0),
+        },
         _ => theme.fx.border_width_px.max(1.0),
     };
 
@@ -153,27 +175,37 @@ fn resolve_border_color(theme: &PrismTheme, variant: SurfaceVariant, is_dark: bo
         }
         _ => match variant {
             SurfaceVariant::PrimaryButton => {
-                rgb_to_hsla(theme.palette.primary.dark_rgb, if is_dark { 0.45 } else { 0.35 })
+                rgb_to_hsla(theme.palette.primary.dark_rgb, if is_dark { 0.35 } else { 0.0 })
             }
-            SurfaceVariant::CobaltButton => rgb_to_hsla(theme.palette.info.dark_rgb, 0.40),
-            SurfaceVariant::Emerald => rgb_to_hsla(theme.palette.success.dark_rgb, 0.38),
+            SurfaceVariant::CobaltButton => rgb_to_hsla(theme.palette.info.rgb, 0.35),
+            SurfaceVariant::Emerald => rgb_to_hsla(RgbColor::new(255, 255, 255), 0.80),
             SurfaceVariant::Thumb => rgb_to_hsla(RgbColor::new(255, 255, 255), 0.94),
             SurfaceVariant::Well => {
                 if is_dark {
-                    rgb_to_hsla(RgbColor::new(148, 163, 184), 0.24)
+                    rgb_to_hsla(RgbColor::new(148, 163, 184), 0.20)
                 } else {
-                    rgb_to_hsla(RgbColor::new(132, 148, 172), 0.34)
+                    rgb_to_hsla(RgbColor::new(132, 148, 172), 0.28)
                 }
             }
             SurfaceVariant::Badge => rgb_to_hsla(theme.palette.primary.rgb, 0.30),
-            _ => color_str_to_hsla(
-                &theme.fx.window_border,
-                if is_dark {
-                    RgbColor::new(148, 163, 184)
+            _ => {
+                if theme.material == ThemeMaterial::Glass {
+                    if is_dark {
+                        rgb_to_hsla(RgbColor::new(148, 163, 184), 0.26)
+                    } else {
+                        rgb_to_hsla(RgbColor::new(122, 138, 162), 0.34)
+                    }
                 } else {
-                    RgbColor::new(122, 138, 162)
-                },
-            ),
+                    color_str_to_hsla(
+                        &theme.fx.window_border,
+                        if is_dark {
+                            RgbColor::new(148, 163, 184)
+                        } else {
+                            RgbColor::new(122, 138, 162)
+                        },
+                    )
+                }
+            }
         },
     }
 }
@@ -212,18 +244,20 @@ fn apply_material_fill(el: Div, theme: &PrismTheme, variant: SurfaceVariant, is_
     // Gradient-driven optical materials (Glass, Mica, Chrome, Resin, Clay, Neumorphic, Neon)
     match variant {
         SurfaceVariant::PrimaryButton => {
-            // Matches `refractor.css` .prism-btn-primary: subtle deeper top -> luminous primary light bottom
-            let rich_top = lerp_rgb(theme.palette.primary.rgb, theme.palette.primary.dark_rgb, 0.28);
+            // Exact `refractor.css` .prism-btn-primary midpoint calibration:
+            // #c94114 (0%) -> #e75c24 (52%) -> #f59c28 (100%)
+            let top_rgb = lerp_rgb(theme.palette.primary.dark_rgb, theme.palette.primary.rgb, 0.35);
+            let bot_rgb = lerp_rgb(theme.palette.primary.rgb, theme.palette.primary.light_rgb, 0.72);
             let (angle, top, bottom) = match theme.material {
                 ThemeMaterial::Glass => (
                     180.0,
-                    rgb_to_hsla(rich_top, 0.98),
-                    rgb_to_hsla(theme.palette.primary.light_rgb, 0.98),
+                    rgb_to_hsla(top_rgb, 1.0),
+                    rgb_to_hsla(bot_rgb, 1.0),
                 ),
                 ThemeMaterial::Chrome | ThemeMaterial::Resin => (
                     135.0,
-                    rgb_to_hsla(theme.palette.primary.light_rgb, 0.98),
-                    rgb_to_hsla(rich_top, 0.98),
+                    rgb_to_hsla(bot_rgb, 0.98),
+                    rgb_to_hsla(top_rgb, 0.98),
                 ),
                 _ => (
                     180.0,
@@ -238,41 +272,45 @@ fn apply_material_fill(el: Div, theme: &PrismTheme, variant: SurfaceVariant, is_
             ))
         }
         SurfaceVariant::CobaltButton => {
-            let deep = lerp_rgb(theme.palette.info.rgb, theme.palette.info.dark_rgb, 0.35);
+            // Exact `refractor.css` .prism-btn-cobalt:
+            // bulk is deep info-main -> info-dark with sky-blue top-left highlight
+            let top_left = lerp_rgb(theme.palette.info.rgb, theme.palette.info.light_rgb, 0.42);
             el.bg(linear_gradient(
                 135.0,
-                linear_color_stop(rgb_to_hsla(theme.palette.info.light_rgb, 0.96), 0.0),
-                linear_color_stop(rgb_to_hsla(deep, 0.98), 1.0),
+                linear_color_stop(rgb_to_hsla(top_left, 1.0), 0.0),
+                linear_color_stop(rgb_to_hsla(theme.palette.info.dark_rgb, 1.0), 1.0),
             ))
         }
         SurfaceVariant::Emerald => {
-            let deep = lerp_rgb(theme.palette.success.rgb, theme.palette.success.dark_rgb, 0.35);
+            // Exact `refractor.css` .prism-emerald:
+            // linear-gradient(145deg, success-dark 0%, success-main 54%, success-light 100%)
+            let bot_rgb = lerp_rgb(theme.palette.success.rgb, theme.palette.success.light_rgb, 0.55);
             el.bg(linear_gradient(
                 145.0,
-                linear_color_stop(rgb_to_hsla(deep, 0.96), 0.0),
-                linear_color_stop(rgb_to_hsla(theme.palette.success.light_rgb, 0.96), 1.0),
+                linear_color_stop(rgb_to_hsla(theme.palette.success.dark_rgb, 1.0), 0.0),
+                linear_color_stop(rgb_to_hsla(bot_rgb, 1.0), 1.0),
             ))
         }
         SurfaceVariant::Thumb => el.bg(linear_gradient(
             180.0,
             linear_color_stop(rgb_to_hsla(RgbColor::new(255, 255, 255), 1.0), 0.0),
-            linear_color_stop(rgb_to_hsla(RgbColor::new(232, 238, 246), 1.0), 1.0),
+            linear_color_stop(rgb_to_hsla(RgbColor::new(238, 242, 247), 1.0), 1.0),
         )),
         SurfaceVariant::SecondaryButton => {
             if is_dark {
-                let top = color_str_to_hsla(&theme.fx.surface_bg, RgbColor::new(40, 54, 76));
-                let bottom = color_str_to_hsla(&theme.fx.window_bg, RgbColor::new(22, 32, 48));
+                let top = rgb_to_hsla(RgbColor::new(38, 52, 74), 0.90);
+                let bottom = rgb_to_hsla(RgbColor::new(24, 35, 52), 0.88);
                 el.bg(linear_gradient(
                     180.0,
-                    linear_color_stop(Hsla { a: 0.92, ..top }, 0.0),
-                    linear_color_stop(Hsla { a: 0.88, ..bottom }, 1.0),
+                    linear_color_stop(top, 0.0),
+                    linear_color_stop(bottom, 1.0),
                 ))
             } else {
-                // Cool crystal ice-blue glass matching `.prism-btn-secondary`
-                let top = rgb_to_hsla(RgbColor::new(240, 246, 254), 0.92);
+                // Exact `.prism-btn-secondary`: rgba(232,241,252,0.9) -> rgba(206,226,246,0.8) -> rgba(secondary_light,0.34)
+                let top = rgb_to_hsla(RgbColor::new(240, 246, 253), 0.94);
                 let bottom = rgb_to_hsla(
-                    lerp_rgb(RgbColor::new(208, 226, 246), theme.palette.secondary.light_rgb, 0.45),
-                    0.84,
+                    lerp_rgb(RgbColor::new(206, 226, 246), theme.palette.secondary.light_rgb, 0.35),
+                    0.82,
                 );
                 el.bg(linear_gradient(
                     180.0,
@@ -282,102 +320,179 @@ fn apply_material_fill(el: Div, theme: &PrismTheme, variant: SurfaceVariant, is_
             }
         }
         SurfaceVariant::Crystal => {
-            let base = color_str_to_hsla(
-                &theme.fx.surface_bg,
-                if is_dark {
-                    RgbColor::new(34, 45, 64)
+            if theme.material == ThemeMaterial::Glass {
+                let (top, bottom) = if is_dark {
+                    (
+                        rgb_to_hsla(RgbColor::new(34, 45, 64), 0.84),
+                        rgb_to_hsla(RgbColor::new(20, 28, 42), 0.80),
+                    )
                 } else {
-                    RgbColor::new(242, 246, 251)
-                },
-            );
-            let top = Hsla {
-                l: (base.l + 0.025).clamp(0.0, 1.0),
-                a: base.a.max(0.84),
-                ..base
-            };
-            let bottom = Hsla {
-                l: (base.l - 0.03).clamp(0.0, 1.0),
-                a: base.a.max(0.78),
-                ..base
-            };
-            el.bg(linear_gradient(
-                180.0,
-                linear_color_stop(top, 0.0),
-                linear_color_stop(bottom, 1.0),
-            ))
+                    // Exact `refractor.css` --prism-crystal-top -> mid -> bottom
+                    (
+                        rgb_to_hsla(RgbColor::new(244, 248, 253), 0.90),
+                        rgb_to_hsla(RgbColor::new(225, 233, 244), 0.82),
+                    )
+                };
+                el.bg(linear_gradient(
+                    180.0,
+                    linear_color_stop(top, 0.0),
+                    linear_color_stop(bottom, 1.0),
+                ))
+            } else {
+                let base = color_str_to_hsla(
+                    &theme.fx.surface_bg,
+                    if is_dark {
+                        RgbColor::new(34, 45, 64)
+                    } else {
+                        RgbColor::new(242, 246, 251)
+                    },
+                );
+                let top = Hsla {
+                    l: (base.l + 0.025).clamp(0.0, 1.0),
+                    a: base.a.max(0.84),
+                    ..base
+                };
+                let bottom = Hsla {
+                    l: (base.l - 0.03).clamp(0.0, 1.0),
+                    a: base.a.max(0.78),
+                    ..base
+                };
+                el.bg(linear_gradient(
+                    180.0,
+                    linear_color_stop(top, 0.0),
+                    linear_color_stop(bottom, 1.0),
+                ))
+            }
         }
         SurfaceVariant::Slab | SurfaceVariant::WindowFrame => {
-            let base = color_str_to_hsla(
-                &theme.fx.window_bg,
-                if is_dark {
-                    RgbColor::new(26, 36, 52)
+            if theme.material == ThemeMaterial::Glass {
+                let (top, bottom) = if is_dark {
+                    (
+                        rgb_to_hsla(RgbColor::new(28, 38, 54), 0.86),
+                        rgb_to_hsla(RgbColor::new(17, 24, 36), 0.84),
+                    )
                 } else {
-                    RgbColor::new(241, 245, 251)
-                },
-            );
-            let top = Hsla {
-                l: (base.l + if is_dark { 0.03 } else { 0.025 }).clamp(0.0, 1.0),
-                a: base.a.max(0.84),
-                ..base
-            };
-            let bottom = Hsla {
-                l: (base.l - 0.03).clamp(0.0, 1.0),
-                a: base.a.max(0.78),
-                ..base
-            };
-            let angle = if theme.material == ThemeMaterial::Chrome {
-                150.0
+                    (
+                        rgb_to_hsla(RgbColor::new(245, 248, 253), 0.92),
+                        rgb_to_hsla(RgbColor::new(232, 238, 247), 0.88),
+                    )
+                };
+                el.bg(linear_gradient(
+                    180.0,
+                    linear_color_stop(top, 0.0),
+                    linear_color_stop(bottom, 1.0),
+                ))
             } else {
-                180.0
-            };
-            el.bg(linear_gradient(
-                angle,
-                linear_color_stop(top, 0.0),
-                linear_color_stop(bottom, 1.0),
-            ))
+                let base = color_str_to_hsla(
+                    &theme.fx.window_bg,
+                    if is_dark {
+                        RgbColor::new(26, 36, 52)
+                    } else {
+                        RgbColor::new(241, 245, 251)
+                    },
+                );
+                let top = Hsla {
+                    l: (base.l + if is_dark { 0.03 } else { 0.025 }).clamp(0.0, 1.0),
+                    a: base.a.max(0.84),
+                    ..base
+                };
+                let bottom = Hsla {
+                    l: (base.l - 0.03).clamp(0.0, 1.0),
+                    a: base.a.max(0.78),
+                    ..base
+                };
+                let angle = if theme.material == ThemeMaterial::Chrome {
+                    150.0
+                } else {
+                    180.0
+                };
+                el.bg(linear_gradient(
+                    angle,
+                    linear_color_stop(top, 0.0),
+                    linear_color_stop(bottom, 1.0),
+                ))
+            }
         }
         SurfaceVariant::Well => {
-            let start = color_str_to_hsla(
-                &theme.palette.background.well,
-                if is_dark {
-                    RgbColor::new(13, 19, 29)
+            if theme.material == ThemeMaterial::Glass {
+                let (start, end) = if is_dark {
+                    (
+                        rgb_to_hsla(RgbColor::new(13, 19, 29), 0.92),
+                        rgb_to_hsla(RgbColor::new(20, 28, 41), 0.95),
+                    )
                 } else {
-                    RgbColor::new(236, 241, 248)
-                },
-            );
-            let end = Hsla {
-                l: (start.l + if is_dark { 0.025 } else { 0.03 }).clamp(0.0, 1.0),
-                a: 0.96,
-                ..start
-            };
-            el.bg(linear_gradient(
-                180.0,
-                linear_color_stop(Hsla { a: 0.94, ..start }, 0.0),
-                linear_color_stop(end, 1.0),
-            ))
+                    (
+                        rgb_to_hsla(RgbColor::new(238, 242, 248), 0.94),
+                        rgb_to_hsla(RgbColor::new(249, 251, 254), 0.98),
+                    )
+                };
+                el.bg(linear_gradient(
+                    180.0,
+                    linear_color_stop(start, 0.0),
+                    linear_color_stop(end, 1.0),
+                ))
+            } else {
+                let start = color_str_to_hsla(
+                    &theme.palette.background.well,
+                    if is_dark {
+                        RgbColor::new(13, 19, 29)
+                    } else {
+                        RgbColor::new(236, 241, 248)
+                    },
+                );
+                let end = Hsla {
+                    l: (start.l + if is_dark { 0.025 } else { 0.03 }).clamp(0.0, 1.0),
+                    a: 0.96,
+                    ..start
+                };
+                el.bg(linear_gradient(
+                    180.0,
+                    linear_color_stop(Hsla { a: 0.94, ..start }, 0.0),
+                    linear_color_stop(end, 1.0),
+                ))
+            }
         }
         SurfaceVariant::Toast => {
-            let hi = color_str_to_hsla(
-                &theme.fx.surface_highlight,
-                if is_dark {
-                    RgbColor::new(30, 41, 59)
+            if theme.material == ThemeMaterial::Glass {
+                let (top, bottom) = if is_dark {
+                    (
+                        rgb_to_hsla(RgbColor::new(34, 45, 64), 0.84),
+                        rgb_to_hsla(RgbColor::new(20, 28, 42), 0.80),
+                    )
                 } else {
-                    RgbColor::new(252, 253, 255)
-                },
-            );
-            let lo = color_str_to_hsla(
-                &theme.fx.surface_bg,
-                if is_dark {
-                    RgbColor::new(20, 28, 42)
-                } else {
-                    RgbColor::new(235, 241, 249)
-                },
-            );
-            el.bg(linear_gradient(
-                180.0,
-                linear_color_stop(hi, 0.0),
-                linear_color_stop(lo, 1.0),
-            ))
+                    (
+                        rgb_to_hsla(RgbColor::new(244, 248, 253), 0.90),
+                        rgb_to_hsla(RgbColor::new(225, 233, 244), 0.82),
+                    )
+                };
+                el.bg(linear_gradient(
+                    180.0,
+                    linear_color_stop(top, 0.0),
+                    linear_color_stop(bottom, 1.0),
+                ))
+            } else {
+                let hi = color_str_to_hsla(
+                    &theme.fx.surface_highlight,
+                    if is_dark {
+                        RgbColor::new(30, 41, 59)
+                    } else {
+                        RgbColor::new(252, 253, 255)
+                    },
+                );
+                let lo = color_str_to_hsla(
+                    &theme.fx.surface_bg,
+                    if is_dark {
+                        RgbColor::new(20, 28, 42)
+                    } else {
+                        RgbColor::new(235, 241, 249)
+                    },
+                );
+                el.bg(linear_gradient(
+                    180.0,
+                    linear_color_stop(hi, 0.0),
+                    linear_color_stop(lo, 1.0),
+                ))
+            }
         }
         SurfaceVariant::Chrome => {
             let base = color_str_to_hsla(
@@ -652,34 +767,82 @@ fn attach_concentric_fx_canvas(
                             inner_bounds,
                             Corners::all(px(inner_r)),
                             transparent,
-                            Edges::all(px(1.0)),
-                            rgb_to_hsla(RgbColor::new(255, 245, 235), (0.28 * spec).clamp(0.0, 0.40)),
+                            Edges::all(px(1.5)),
+                            rgb_to_hsla(RgbColor::new(255, 238, 220), (0.54 * spec).clamp(0.0, 0.64)),
                             BorderStyle::Solid,
                         ));
                     }
 
-                    // Nested specular glass capsule arc (`.prism-btn-primary::before`)
-                    // Drawn ONLY when element is large enough, with mathematically computed
-                    // horizontal clearance from the outer corner curve so it NEVER pokes out.
-                    if matches!(
-                        material,
-                        ThemeMaterial::Glass
-                            | ThemeMaterial::Chrome
-                            | ThemeMaterial::Resin
-                            | ThemeMaterial::Clay
-                    ) && iw >= 34.0
+                    // Top radial-equivalent luminous specular wash (matches CSS radial-gradient on PrimaryButton & CobaltButton)
+                    if material == ThemeMaterial::Glass {
+                        if variant == SurfaceVariant::PrimaryButton {
+                            window.paint_quad(quad(
+                                inner_bounds,
+                                Corners::all(px(inner_r)),
+                                linear_gradient(
+                                    180.0,
+                                    linear_color_stop(
+                                        rgb_to_hsla(
+                                            RgbColor::new(255, 255, 255),
+                                            (0.42 * spec).clamp(0.0, 0.54),
+                                        ),
+                                        0.0,
+                                    ),
+                                    linear_color_stop(
+                                        rgb_to_hsla(RgbColor::new(255, 255, 255), 0.0),
+                                        0.44,
+                                    ),
+                                ),
+                                Edges::default(),
+                                transparent,
+                                BorderStyle::Solid,
+                            ));
+                        } else if variant == SurfaceVariant::CobaltButton {
+                            window.paint_quad(quad(
+                                inner_bounds,
+                                Corners::all(px(inner_r)),
+                                linear_gradient(
+                                    135.0,
+                                    linear_color_stop(
+                                        rgb_to_hsla(
+                                            RgbColor::new(56, 189, 248),
+                                            (0.54 * spec).clamp(0.0, 0.65),
+                                        ),
+                                        0.0,
+                                    ),
+                                    linear_color_stop(
+                                        rgb_to_hsla(RgbColor::new(56, 189, 248), 0.0),
+                                        0.48,
+                                    ),
+                                ),
+                                Edges::default(),
+                                transparent,
+                                BorderStyle::Solid,
+                            ));
+                        }
+                    }
+
+                    // Nested specular glass capsule arc (ONLY on `.prism-btn-primary::before` in refractor.css)
+                    if variant == SurfaceVariant::PrimaryButton
+                        && matches!(
+                            material,
+                            ThemeMaterial::Glass
+                                | ThemeMaterial::Chrome
+                                | ThemeMaterial::Resin
+                                | ThemeMaterial::Clay
+                        )
+                        && iw >= 34.0
                         && ih >= 24.0
                     {
-                        let arc_pad_top = 2.0_f32;
-                        let arc_h = (ih * 0.34).clamp(5.0, 12.0);
-                        // Exact horizontal distance from outer rounded corner at y = arc_pad_top
+                        let arc_pad_top = 3.0_f32;
+                        let arc_h = (ih * 0.36).clamp(6.0, 18.0);
                         let dy = (inner_r - arc_pad_top).max(0.0);
                         let corner_inset = if inner_r > 1.0 {
                             inner_r - (inner_r * inner_r - dy * dy).max(0.0).sqrt()
                         } else {
                             2.0
                         };
-                        let arc_inset_x = (corner_inset + 3.0).max(5.0);
+                        let arc_inset_x = (corner_inset + 3.0).max(6.0);
                         let arc_w = iw - arc_inset_x * 2.0;
 
                         if arc_w >= 14.0 {
@@ -699,12 +862,12 @@ fn attach_concentric_fx_canvas(
                                     linear_color_stop(
                                         rgb_to_hsla(
                                             RgbColor::new(255, 255, 255),
-                                            (0.36 * spec).clamp(0.0, 0.48),
+                                            (0.52 * spec).clamp(0.0, 0.62),
                                         ),
                                         0.0,
                                     ),
                                     linear_color_stop(
-                                        rgb_to_hsla(RgbColor::new(255, 255, 255), 0.0),
+                                        rgb_to_hsla(RgbColor::new(255, 255, 255), 0.04),
                                         1.0,
                                     ),
                                 ),
@@ -753,17 +916,14 @@ fn attach_concentric_fx_canvas(
                     }
                 }
                 SurfaceVariant::Slab | SurfaceVariant::WindowFrame => {
-                    // Subtle diagonal prismatic glass wash strictly inside inner_bounds
+                    // Exact `refractor.css` .prism-slab piecewise diagonal prismatic glass wash:
+                    // 0..50% bright white top-left | 48..92% cool cyan right | 72..100% warm amber bottom-right
                     if matches!(
                         material,
                         ThemeMaterial::Glass | ThemeMaterial::Chrome | ThemeMaterial::Resin
                     ) {
                         let top_wash =
-                            if is_dark { 0.08 * spec } else { 0.28 * spec }.clamp(0.0, 0.36);
-                        let bottom_wash = Hsla {
-                            a: if is_dark { 0.05 } else { 0.08 } * caustic.min(1.0),
-                            ..caustic_tint
-                        };
+                            if is_dark { 0.14 * spec } else { 0.72 * spec }.clamp(0.0, 0.80);
                         window.paint_quad(quad(
                             inner_bounds,
                             Corners::all(px(inner_r)),
@@ -773,12 +933,48 @@ fn attach_concentric_fx_canvas(
                                     rgb_to_hsla(RgbColor::new(255, 255, 255), top_wash),
                                     0.0,
                                 ),
-                                linear_color_stop(bottom_wash, 1.0),
+                                linear_color_stop(
+                                    rgb_to_hsla(RgbColor::new(255, 255, 255), 0.0),
+                                    0.50,
+                                ),
                             ),
                             Edges::default(),
                             transparent,
                             BorderStyle::Solid,
                         ));
+                        let cyan_alpha = if is_dark { 0.08 } else { 0.20 } * caustic.min(1.0);
+                        window.paint_quad(quad(
+                            inner_bounds,
+                            Corners::all(px(inner_r)),
+                            linear_gradient(
+                                110.0,
+                                linear_color_stop(Hsla { a: 0.0, ..caustic_tint }, 0.45),
+                                linear_color_stop(Hsla { a: cyan_alpha, ..caustic_tint }, 0.94),
+                            ),
+                            Edges::default(),
+                            transparent,
+                            BorderStyle::Solid,
+                        ));
+                        if !is_dark && material == ThemeMaterial::Glass {
+                            window.paint_quad(quad(
+                                inner_bounds,
+                                Corners::all(px(inner_r)),
+                                linear_gradient(
+                                    135.0,
+                                    linear_color_stop(
+                                        rgb_to_hsla(warning_rgb, 0.0),
+                                        0.72,
+                                    ),
+                                    linear_color_stop(
+                                        rgb_to_hsla(warning_rgb, (0.20 * caustic).clamp(0.0, 0.28)),
+                                        1.0,
+                                    ),
+                                ),
+                                Edges::default(),
+                                transparent,
+                                BorderStyle::Solid,
+                            ));
+                        }
                     }
                     // Concentric top specular catchlight rim
                     let rim_alpha =
@@ -975,89 +1171,90 @@ fn build_material_shadows(theme: &PrismTheme, variant: SurfaceVariant) -> Vec<Bo
             _ => Vec::new(),
         },
         // Optical Glass, Mica, Chrome — dual ambient + directional caustic floor bloom
+        // Calibrated to match Chromium CSS Gaussian box-shadow luminance drop on GPUI SDF shadows
         ThemeMaterial::Glass | ThemeMaterial::Mica | ThemeMaterial::Chrome => match variant {
             SurfaceVariant::PrimaryButton => {
                 let mut list = vec![BoxShadow {
-                    color: rgb_to_hsla(theme.palette.primary.rgb, 0.42),
-                    offset: point(px(0.0), px(8.0)),
+                    color: rgb_to_hsla(theme.palette.primary.rgb, 0.28),
+                    offset: point(px(0.0), px(9.0)),
                     blur_radius: px(18.0),
-                    spread_radius: px(-5.0),
+                    spread_radius: px(-6.0),
                 }];
                 if caustic > 0.05 {
                     list.push(BoxShadow {
                         color: rgb_to_hsla(
                             theme.palette.primary.light_rgb,
-                            (0.38 * caustic).clamp(0.0, 0.56),
+                            (0.24 * caustic).clamp(0.0, 0.36),
                         ),
-                        offset: point(px(5.0), px(9.0)),
+                        offset: point(px(6.0), px(9.0)),
                         blur_radius: px(15.0),
-                        spread_radius: px(-5.0),
+                        spread_radius: px(-6.0),
                     });
                 }
                 list
             }
             SurfaceVariant::CobaltButton => {
                 let mut list = vec![BoxShadow {
-                    color: rgb_to_hsla(theme.palette.info.rgb, 0.42),
-                    offset: point(px(0.0), px(8.0)),
-                    blur_radius: px(18.0),
+                    color: rgb_to_hsla(theme.palette.info.rgb, 0.26),
+                    offset: point(px(0.0), px(9.0)),
+                    blur_radius: px(17.0),
                     spread_radius: px(-5.0),
                 }];
                 if caustic > 0.05 {
                     list.push(BoxShadow {
                         color: rgb_to_hsla(
                             theme.palette.info.light_rgb,
-                            (0.36 * caustic).clamp(0.0, 0.52),
+                            (0.24 * caustic).clamp(0.0, 0.34),
                         ),
-                        offset: point(px(5.0), px(9.0)),
+                        offset: point(px(5.0), px(8.0)),
                         blur_radius: px(14.0),
-                        spread_radius: px(-4.0),
+                        spread_radius: px(-5.0),
                     });
                 }
                 list
             }
             SurfaceVariant::Emerald => vec![BoxShadow {
-                color: rgb_to_hsla(theme.palette.success.rgb, 0.36),
-                offset: point(px(0.0), px(6.0)),
+                color: rgb_to_hsla(theme.palette.success.rgb, 0.22),
+                offset: point(px(0.0), px(7.0)),
                 blur_radius: px(14.0),
                 spread_radius: px(-4.0),
             }],
             SurfaceVariant::Thumb => vec![BoxShadow {
-                color: rgb_to_hsla(RgbColor::new(15, 23, 42), 0.24),
+                color: rgb_to_hsla(RgbColor::new(15, 23, 42), 0.14),
                 offset: point(px(0.0), px(3.0)),
                 blur_radius: px(7.0),
                 spread_radius: px(0.0),
             }],
-            SurfaceVariant::Slab | SurfaceVariant::WindowFrame | SurfaceVariant::Toast => {
+            SurfaceVariant::Slab | SurfaceVariant::WindowFrame => {
                 let mut list = vec![BoxShadow {
                     color: rgb_to_hsla(
-                        RgbColor::new(15, 23, 42),
-                        if is_dark { 0.54 } else { 0.18 },
+                        RgbColor::new(30, 41, 59),
+                        if is_dark { 0.44 } else { 0.09 },
                     ),
-                    offset: point(px(0.0), px(16.0)),
-                    blur_radius: px(30.0),
+                    offset: point(px(0.0), px(14.0)),
+                    blur_radius: px(26.0),
                     spread_radius: px(-10.0),
                 }];
                 if !is_dark && caustic > 0.05 && theme.material == ThemeMaterial::Glass {
                     list.push(BoxShadow {
                         color: rgb_to_hsla(
                             theme.palette.primary.light_rgb,
-                            (0.26 * caustic).clamp(0.0, 0.40),
+                            (0.11 * caustic).clamp(0.0, 0.18),
                         ),
-                        offset: point(px(8.0), px(12.0)),
-                        blur_radius: px(20.0),
+                        offset: point(px(7.0), px(10.0)),
+                        blur_radius: px(18.0),
                         spread_radius: px(-9.0),
                     });
                 }
                 list
             }
-            SurfaceVariant::SecondaryButton | SurfaceVariant::Crystal => {
+            SurfaceVariant::SecondaryButton | SurfaceVariant::Crystal | SurfaceVariant::Toast => {
                 let mut list = vec![BoxShadow {
                     color: rgb_to_hsla(
-                        RgbColor::new(28, 52, 88),
-                        if is_dark { 0.46 } else { 0.16 },
+                        RgbColor::new(30, 41, 59),
+                        if is_dark { 0.38 } else { 0.08 },
                     ),
-                    offset: point(px(0.0), px(8.0)),
+                    offset: point(px(0.0), px(9.0)),
                     blur_radius: px(18.0),
                     spread_radius: px(-6.0),
                 }];
@@ -1068,10 +1265,10 @@ fn build_material_shadows(theme: &PrismTheme, variant: SurfaceVariant) -> Vec<Bo
                         theme.palette.primary.light_rgb
                     };
                     list.push(BoxShadow {
-                        color: rgb_to_hsla(caustic_rgb, (0.26 * caustic).clamp(0.0, 0.40)),
-                        offset: point(px(6.0), px(9.0)),
+                        color: rgb_to_hsla(caustic_rgb, (0.11 * caustic).clamp(0.0, 0.18)),
+                        offset: point(px(6.0), px(8.0)),
                         blur_radius: px(14.0),
-                        spread_radius: px(-5.0),
+                        spread_radius: px(-6.0),
                     });
                 }
                 list

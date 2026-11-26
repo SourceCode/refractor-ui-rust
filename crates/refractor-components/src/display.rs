@@ -65,23 +65,36 @@ impl Default for PrismCard {
 impl RenderOnce for PrismCard {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
-        let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(21, 30, 44));
-        let accent = color_str_to_hsla(&theme.palette.primary.main, theme.palette.primary.rgb);
+        let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(15, 23, 42));
+        let muted = color_str_to_hsla(&theme.palette.text.secondary, RgbColor::new(100, 116, 139));
 
         let mut card = optical_surface(&theme, SurfaceVariant::Slab)
+            .w_full()
             .p(px(20.0))
             .flex()
             .flex_col()
-            .gap(px(10.0));
+            .gap(px(4.0));
 
         if let Some(kicker) = self.kicker {
-            card = card.child(div().text_size(px(11.0)).text_color(accent).child(kicker));
+            card = card.child(div().text_size(px(12.0)).text_color(muted).child(kicker));
         }
         if let Some(title) = self.title {
-            card = card.child(div().text_size(px(18.0)).text_color(fg).child(title));
+            card = card.child(
+                div()
+                    .text_size(px(16.0))
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .text_color(fg)
+                    .child(title),
+            );
         }
         for child in self.children {
-            card = card.child(child);
+            card = card.child(
+                div()
+                    .mt(px(4.0))
+                    .text_size(px(14.0))
+                    .text_color(muted)
+                    .child(child),
+            );
         }
         card
     }
@@ -176,72 +189,33 @@ impl BadgeStatus {
 impl RenderOnce for BadgeStatus {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
-        match self.tone {
-            StatusTone::Primary => {
-                let fg = color_str_to_hsla(
-                    &theme.palette.primary.contrast_text,
-                    RgbColor::new(255, 255, 255),
-                );
-                optical_surface(&theme, SurfaceVariant::PrimaryButton)
-                    .px(px(10.0))
-                    .py(px(4.0))
-                    .text_size(px(11.0))
-                    .font_weight(FontWeight::SEMIBOLD)
-                    .text_color(fg)
-                    .child(self.label)
-            }
-            StatusTone::Success => {
-                let fg = color_str_to_hsla(
-                    &theme.palette.success.contrast_text,
-                    RgbColor::new(255, 255, 255),
-                );
-                optical_surface(&theme, SurfaceVariant::Emerald)
-                    .px(px(10.0))
-                    .py(px(4.0))
-                    .text_size(px(11.0))
-                    .font_weight(FontWeight::SEMIBOLD)
-                    .text_color(fg)
-                    .child(self.label)
-            }
-            StatusTone::Warning => {
-                let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(24, 32, 44));
-                optical_surface(&theme, SurfaceVariant::Badge)
-                    .bg(rgb_to_hsla(theme.palette.warning.rgb, 0.22))
-                    .border_color(rgb_to_hsla(theme.palette.warning.rgb, 0.55))
-                    .px(px(10.0))
-                    .py(px(4.0))
-                    .text_size(px(11.0))
-                    .font_weight(FontWeight::SEMIBOLD)
-                    .text_color(fg)
-                    .child(self.label)
-            }
-            StatusTone::Error => {
-                let fg = color_str_to_hsla(
-                    &theme.palette.error.contrast_text,
-                    RgbColor::new(255, 255, 255),
-                );
-                optical_surface(&theme, SurfaceVariant::Badge)
-                    .bg(rgb_to_hsla(theme.palette.error.rgb, 0.90))
-                    .border_color(rgb_to_hsla(theme.palette.error.light_rgb, 0.65))
-                    .px(px(10.0))
-                    .py(px(4.0))
-                    .text_size(px(11.0))
-                    .font_weight(FontWeight::SEMIBOLD)
-                    .text_color(fg)
-                    .child(self.label)
-            }
-            StatusTone::Neutral => {
-                let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(21, 30, 44));
-                optical_surface(&theme, SurfaceVariant::Crystal)
-                    .px(px(10.0))
-                    .py(px(4.0))
-                    .rounded(px(999.0))
-                    .text_size(px(11.0))
-                    .font_weight(FontWeight::MEDIUM)
-                    .text_color(fg)
-                    .child(self.label)
-            }
-        }
+        let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(24, 32, 44));
+        let dot_rgb = match self.tone {
+            StatusTone::Success => RgbColor::new(16, 185, 129),
+            StatusTone::Warning => RgbColor::new(245, 158, 11),
+            StatusTone::Primary => RgbColor::new(249, 115, 22),
+            StatusTone::Error => RgbColor::new(239, 68, 68),
+            StatusTone::Neutral => RgbColor::new(148, 163, 184),
+        };
+        optical_surface(&theme, SurfaceVariant::Crystal)
+            .rounded(px(9999.0))
+            .px(px(14.0))
+            .py(px(6.0))
+            .flex()
+            .flex_row()
+            .items_center()
+            .gap(px(8.0))
+            .text_size(px(12.0))
+            .font_weight(FontWeight::MEDIUM)
+            .text_color(fg)
+            .child(
+                div()
+                    .w(px(8.0))
+                    .h(px(8.0))
+                    .rounded(px(9999.0))
+                    .bg(rgb_to_hsla(dot_rgb, 1.0)),
+            )
+            .child(self.label)
     }
 }
 
@@ -249,6 +223,7 @@ impl RenderOnce for BadgeStatus {
 #[derive(Debug, Clone, IntoElement)]
 pub struct TagChip {
     pub label: SharedString,
+    pub selected: bool,
     pub base: BaseProps,
 }
 
@@ -256,20 +231,40 @@ impl TagChip {
     pub fn new(label: impl Into<SharedString>) -> Self {
         Self {
             label: label.into(),
+            selected: false,
             base: BaseProps::new(),
         }
+    }
+
+    pub const fn selected(mut self, selected: bool) -> Self {
+        self.selected = selected;
+        self
     }
 }
 
 impl RenderOnce for TagChip {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
-        let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(21, 30, 44));
-        optical_surface(&theme, SurfaceVariant::Crystal)
-            .px(px(10.0))
-            .py(px(4.0))
-            .rounded(px(999.0))
+        let (variant, fg) = if self.selected {
+            (
+                SurfaceVariant::Emerald,
+                rgb_to_hsla(RgbColor::new(255, 255, 255), 1.0),
+            )
+        } else {
+            (
+                SurfaceVariant::Crystal,
+                color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(24, 32, 44)),
+            )
+        };
+        optical_surface(&theme, variant)
+            .h(px(32.0))
+            .px(px(14.0))
+            .rounded(px(9999.0))
+            .flex()
+            .items_center()
+            .justify_center()
             .text_size(px(12.0))
+            .font_weight(FontWeight::MEDIUM)
             .text_color(fg)
             .child(self.label)
     }
@@ -287,7 +282,7 @@ impl Avatar {
     pub fn new(initials: impl Into<SharedString>) -> Self {
         Self {
             initials: initials.into(),
-            size_px: 40.0,
+            size_px: 44.0,
             base: BaseProps::new(),
         }
     }
@@ -302,19 +297,38 @@ impl RenderOnce for Avatar {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
         let fg = color_str_to_hsla(
-            &theme.palette.primary.contrast_text,
+            &theme.palette.info.contrast_text,
             RgbColor::new(255, 255, 255),
         );
-        optical_surface(&theme, SurfaceVariant::PrimaryButton)
-            .w(px(self.size_px.max(24.0)))
-            .h(px(self.size_px.max(24.0)))
-            .rounded(px(999.0))
+        let dim = self.size_px.max(24.0);
+        let font_px = if dim <= 38.0 {
+            12.0
+        } else if dim >= 52.0 {
+            16.0
+        } else {
+            14.0
+        };
+        optical_surface(&theme, SurfaceVariant::Crystal)
+            .w(px(dim))
+            .h(px(dim))
+            .rounded(px(9999.0))
+            .p(px(2.0))
             .flex()
             .items_center()
             .justify_center()
-            .text_size(px(13.0))
-            .text_color(fg)
-            .child(self.initials)
+            .overflow_hidden()
+            .child(
+                optical_surface(&theme, SurfaceVariant::CobaltButton)
+                    .size_full()
+                    .rounded(px(9999.0))
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .text_size(px(font_px))
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .text_color(fg)
+                    .child(self.initials),
+            )
     }
 }
 
@@ -341,25 +355,51 @@ impl Accordion {
 impl RenderOnce for Accordion {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
-        let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(21, 30, 44));
-        let muted = color_str_to_hsla(&theme.palette.text.secondary, RgbColor::new(100, 116, 139));
-        let mut box_el = optical_surface(&theme, SurfaceVariant::Crystal)
-            .p(px(14.0))
+        let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(15, 23, 42));
+        let muted = color_str_to_hsla(&theme.palette.text.secondary, RgbColor::new(71, 85, 105));
+        let divider = color_str_to_hsla(&theme.palette.divider, RgbColor::new(226, 232, 240));
+        let mut box_el = optical_surface(&theme, SurfaceVariant::Slab)
+            .w_full()
+            .overflow_hidden()
             .flex()
             .flex_col()
-            .gap(px(8.0))
             .child(
                 div()
+                    .w_full()
+                    .px(px(20.0))
+                    .py(px(14.0))
                     .flex()
                     .flex_row()
+                    .items_center()
                     .justify_between()
-                    .text_size(px(14.0))
-                    .text_color(fg)
-                    .child(self.heading)
-                    .child(if self.expanded { "▾" } else { "▸" }),
+                    .gap(px(16.0))
+                    .child(
+                        div()
+                            .text_size(px(14.0))
+                            .font_weight(FontWeight::SEMIBOLD)
+                            .text_color(fg)
+                            .child(self.heading),
+                    )
+                    .child(
+                        div()
+                            .text_size(px(13.0))
+                            .text_color(muted)
+                            .child(if self.expanded { "⌃" } else { "⌄" }),
+                    ),
             );
         if self.expanded {
-            box_el = box_el.child(div().text_size(px(13.0)).text_color(muted).child(self.body));
+            box_el = box_el.child(
+                div()
+                    .w_full()
+                    .px(px(20.0))
+                    .pt(px(8.0))
+                    .pb(px(16.0))
+                    .border_t(px(1.0))
+                    .border_color(divider)
+                    .text_size(px(14.0))
+                    .text_color(muted)
+                    .child(self.body),
+            );
         }
         box_el
     }
@@ -393,18 +433,47 @@ impl KpiMetricCard {
 impl RenderOnce for KpiMetricCard {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
-        let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(21, 30, 44));
-        let muted = color_str_to_hsla(&theme.palette.text.secondary, RgbColor::new(100, 116, 139));
-        let positive = color_str_to_hsla(&theme.palette.success.main, theme.palette.success.rgb);
-        let mut card = optical_surface(&theme, SurfaceVariant::Crystal)
-            .p(px(16.0))
+        let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(15, 23, 42));
+        let muted = color_str_to_hsla(&theme.palette.text.secondary, RgbColor::new(71, 85, 105));
+        let delta_text = rgb_to_hsla(RgbColor::new(4, 120, 87), 1.0);
+        let delta_fill = rgb_to_hsla(RgbColor::new(16, 185, 129), 0.15);
+        let delta_border = rgb_to_hsla(RgbColor::new(16, 185, 129), 0.30);
+        let mut card = optical_surface(&theme, SurfaceVariant::Slab)
+            .w_full()
+            .p(px(20.0))
             .flex()
             .flex_col()
-            .gap(px(4.0))
-            .child(div().text_size(px(12.0)).text_color(muted).child(self.label))
-            .child(div().text_size(px(24.0)).text_color(fg).child(self.value));
+            .gap(px(6.0))
+            .child(
+                div()
+                    .text_size(px(12.0))
+                    .font_weight(FontWeight::MEDIUM)
+                    .text_color(muted)
+                    .child(self.label),
+            )
+            .child(
+                div()
+                    .text_size(px(26.0))
+                    .font_weight(FontWeight::BOLD)
+                    .text_color(fg)
+                    .child(self.value),
+            );
         if let Some(d) = self.delta {
-            card = card.child(div().text_size(px(12.0)).text_color(positive).child(d));
+            card = card.child(
+                div().flex().flex_row().child(
+                    div()
+                        .px(px(10.0))
+                        .py(px(3.0))
+                        .rounded(px(9999.0))
+                        .bg(delta_fill)
+                        .border(px(1.0))
+                        .border_color(delta_border)
+                        .text_size(px(11.0))
+                        .font_weight(FontWeight::SEMIBOLD)
+                        .text_color(delta_text)
+                        .child(d),
+                ),
+            );
         }
         card
     }

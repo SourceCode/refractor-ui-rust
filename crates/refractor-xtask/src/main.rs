@@ -4,7 +4,7 @@
 //! - Strict `SemVer` 2.0.0 workspace version lockstep across all Cargo manifests
 //! - `CHANGELOG.md` documents the current workspace version
 //! - Required governance files & ADRs (`ADR-0001`..`ADR-0006`) exist
-//! - Full 314-component catalog across 55 categories and 67 themes are intact
+//! - Full 339-component catalog across 58 categories and 67 themes are intact
 //! - Zero `unsafe` keyword tokens in `crates/` and `apps/`
 
 use std::env;
@@ -118,15 +118,15 @@ fn check_repo(root: &Path) -> Vec<String> {
         }
     }
 
-    // 5. Verify catalog parity (314 components, 55 categories, 67 themes)
+    // 5. Verify catalog parity (339 components, 58 categories, 67 themes)
     let comps = all_component_specs().len();
     let cats = all_component_groups().len();
     let themes = all_themes().len();
-    if comps != 314 {
-        errors.push(format!("Expected 314 components, found {comps}"));
+    if comps != 339 {
+        errors.push(format!("Expected 339 components, found {comps}"));
     }
-    if cats != 55 {
-        errors.push(format!("Expected 55 categories, found {cats}"));
+    if cats != 58 {
+        errors.push(format!("Expected 58 categories, found {cats}"));
     }
     if themes != 67 {
         errors.push(format!("Expected 67 themes, found {themes}"));
@@ -190,7 +190,7 @@ fn main() -> ExitCode {
     let errors = check_repo(&root);
     if errors.is_empty() {
         println!(
-            "check-repo PASSED: 314 components, 55 categories, 67 themes, all 6 ADRs & SemVer lockstep verified."
+            "check-repo PASSED: 339 components, 58 categories, 67 themes, all 6 ADRs & SemVer lockstep verified."
         );
         ExitCode::SUCCESS
     } else {

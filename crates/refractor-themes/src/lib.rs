@@ -2,7 +2,8 @@
 //! - 5 Optical Glass Presets (`alabaster`, `obsidian`, `amethyst`, `emerald-tide`, `solar-prism`)
 //! - 62 WebOS-v3 Full-Transformation Themes across 9 categories, 13 material archetypes, and 9 FX overlays.
 
-use std::sync::OnceLock;
+use std::collections::HashMap;
+use std::sync::{LazyLock, OnceLock};
 
 use refractor_tokens::{
     DefinePrismThemeInput, DefinedPrismTheme, PaletteColorInput, PrismTheme, PrismThemeOptions,
@@ -396,7 +397,7 @@ fn build_catalog() -> Vec<ThemeCatalogEntry> {
             ("#1D4ED8", "#0EA5E9", "#1E3A8A", "#FFFFFF"),
             ("#26BC92", "#5CE1B8", "#159673", "#FFFFFF"),
             RefractionIntensity::Standard,
-            18.0,
+            12.0,
         ),
         build_optical_preset(
             "obsidian",
@@ -408,7 +409,7 @@ fn build_catalog() -> Vec<ThemeCatalogEntry> {
             ("#2563EB", "#38BDF8", "#1E3A8A", "#FFFFFF"),
             ("#22C58E", "#5EEAD4", "#0F766E", "#FFFFFF"),
             RefractionIntensity::Standard,
-            20.0,
+            14.0,
         ),
         build_optical_preset(
             "amethyst",
@@ -420,7 +421,7 @@ fn build_catalog() -> Vec<ThemeCatalogEntry> {
             ("#4F46E5", "#818CF8", "#312E81", "#FFFFFF"),
             ("#10B981", "#6EE7B7", "#047857", "#FFFFFF"),
             RefractionIntensity::Vivid,
-            20.0,
+            14.0,
         ),
         build_optical_preset(
             "emerald-tide",
@@ -432,7 +433,7 @@ fn build_catalog() -> Vec<ThemeCatalogEntry> {
             ("#0284C7", "#38BDF8", "#0C4A6E", "#FFFFFF"),
             ("#16A34A", "#4ADE80", "#166534", "#FFFFFF"),
             RefractionIntensity::Standard,
-            18.0,
+            12.0,
         ),
         build_optical_preset(
             "solar-prism",
@@ -444,7 +445,7 @@ fn build_catalog() -> Vec<ThemeCatalogEntry> {
             ("#1D4ED8", "#60A5FA", "#1E3A8A", "#FFFFFF"),
             ("#059669", "#34D399", "#065F46", "#FFFFFF"),
             RefractionIntensity::Vivid,
-            20.0,
+            14.0,
         ),
     ];
 
@@ -456,28 +457,73 @@ fn build_catalog() -> Vec<ThemeCatalogEntry> {
 }
 
 static CATALOG: OnceLock<Vec<ThemeCatalogEntry>> = OnceLock::new();
+static THEME_ID_INDEX: LazyLock<HashMap<String, usize>> = LazyLock::new(|| {
+    all_themes()
+        .iter()
+        .enumerate()
+        .map(|(idx, entry)| (entry.id.to_ascii_lowercase(), idx))
+        .collect()
+});
+static THEME_SEARCH_INDEX: LazyLock<Vec<String>> = LazyLock::new(|| {
+    all_themes()
+        .iter()
+        .map(|entry| {
+            format!(
+                "{} {} {} {} {}",
+                entry.id.to_ascii_lowercase(),
+                entry.name.to_ascii_lowercase(),
+                entry.description.to_ascii_lowercase(),
+                entry.material.as_str(),
+                entry.category.as_str()
+            )
+        })
+        .collect()
+});
+static RESOLVED_CACHE: LazyLock<Vec<PrismTheme>> = LazyLock::new(|| {
+    all_themes()
+        .iter()
+        .map(ThemeCatalogEntry::resolve)
+        .collect()
+});
 
 /// Returns all 67 shipped Refractor themes.
 pub fn all_themes() -> &'static [ThemeCatalogEntry] {
     CATALOG.get_or_init(build_catalog).as_slice()
 }
 
-/// Looks up a theme catalog entry by ID (case-insensitive).
+/// Looks up a theme catalog entry by ID in O(1) time (case-insensitive).
 pub fn find_theme(id: &str) -> Option<&'static ThemeCatalogEntry> {
-    let needle = id.trim();
-    all_themes()
-        .iter()
-        .find(|t| t.id.eq_ignore_ascii_case(needle))
+    let key = id.trim().to_ascii_lowercase();
+    let idx = *THEME_ID_INDEX.get(&key)?;
+    all_themes().get(idx)
 }
 
-/// Resolves a theme by ID, falling back to `alabaster` if unknown.
+/// Resolves a theme by ID using the pre-resolved cache, falling back to `alabaster` if unknown.
 pub fn resolve_theme_by_id(id: &str) -> PrismTheme {
-    find_theme(id)
-        .or_else(|| all_themes().first())
-        .map_or_else(
-            || refractor_tokens::create_prism_theme(PrismThemeOptions::default()),
-            ThemeCatalogEntry::resolve,
-        )
+    let key = id.trim().to_ascii_lowercase();
+    if let Some(&idx) = THEME_ID_INDEX.get(&key)
+        && let Some(cached) = RESOLVED_CACHE.get(idx)
+    {
+        return cached.clone();
+    }
+    RESOLVED_CACHE.first().cloned().unwrap_or_else(|| {
+        refractor_tokens::create_prism_theme(PrismThemeOptions::default())
+    })
+}
+
+/// Searches all 67 themes using the precomputed lowercased search index (zero per-theme allocations).
+pub fn search_themes(query: &str) -> Vec<&'static ThemeCatalogEntry> {
+    let q = query.trim().to_ascii_lowercase();
+    let themes = all_themes();
+    if q.is_empty() {
+        return themes.iter().collect();
+    }
+    THEME_SEARCH_INDEX
+        .iter()
+        .enumerate()
+        .filter(|(_, hay)| hay.contains(&q))
+        .filter_map(|(idx, _)| themes.get(idx))
+        .collect()
 }
 
 /// Returns all themes matching a given [`ThemeCollectionCategory`].

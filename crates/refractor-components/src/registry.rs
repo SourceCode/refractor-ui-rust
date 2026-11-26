@@ -1,11 +1,12 @@
-//! Machine-readable 314-component documentation registry ported verbatim from `glass-ui-v1`.
+//! Machine-readable 339-component documentation registry ported verbatim from `refractor-ui` v1.52.0
+//! with O(1) name lookup and precomputed lowercased search index.
 
-use std::collections::BTreeSet;
-use std::sync::OnceLock;
+use std::collections::{BTreeSet, HashMap};
+use std::sync::{LazyLock, OnceLock};
 
 use serde::{Deserialize, Serialize};
 
-const CATALOG_314_JSON: &str = include_str!("catalog_314.json");
+const CATALOG_339_JSON: &str = include_str!("catalog_339.json");
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct ComponentBestPractice {
@@ -37,7 +38,7 @@ pub struct ComponentPropSpec {
     pub description: String,
 }
 
-/// Complete machine-readable metadata for one component in the 314-component catalog.
+/// Complete machine-readable metadata for one component in the 339-component catalog.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct ComponentSpec {
@@ -58,20 +59,44 @@ pub struct ComponentSpec {
 }
 
 static REGISTRY: OnceLock<Vec<ComponentSpec>> = OnceLock::new();
+static NAME_INDEX: LazyLock<HashMap<String, usize>> = LazyLock::new(|| {
+    all_component_specs()
+        .iter()
+        .enumerate()
+        .map(|(idx, spec)| (spec.name.to_ascii_lowercase(), idx))
+        .collect()
+});
+static SEARCH_INDEX: LazyLock<Vec<String>> = LazyLock::new(|| {
+    all_component_specs()
+        .iter()
+        .map(|c| {
+            format!(
+                "{} {} {} {}",
+                c.name.to_ascii_lowercase(),
+                c.display_name.to_ascii_lowercase(),
+                c.group.to_ascii_lowercase(),
+                c.keywords
+                    .iter()
+                    .map(|k| k.to_ascii_lowercase())
+                    .collect::<Vec<_>>()
+                    .join(" ")
+            )
+        })
+        .collect()
+});
 
-/// Returns all 314 component specifications across all 55 categories.
+/// Returns all 339 component specifications across all 58 categories.
 pub fn all_component_specs() -> &'static [ComponentSpec] {
     REGISTRY
-        .get_or_init(|| serde_json::from_str::<Vec<ComponentSpec>>(CATALOG_314_JSON).unwrap_or_default())
+        .get_or_init(|| serde_json::from_str::<Vec<ComponentSpec>>(CATALOG_339_JSON).unwrap_or_default())
         .as_slice()
 }
 
-/// Looks up a component specification by exact or case-insensitive name.
+/// Looks up a component specification by exact or case-insensitive name in O(1) time.
 pub fn find_component_spec(name: &str) -> Option<&'static ComponentSpec> {
-    let needle = name.trim();
-    all_component_specs()
-        .iter()
-        .find(|c| c.name.eq_ignore_ascii_case(needle))
+    let key = name.trim().to_ascii_lowercase();
+    let idx = *NAME_INDEX.get(&key)?;
+    all_component_specs().get(idx)
 }
 
 /// Returns all distinct category group labels in catalog order.
@@ -94,21 +119,17 @@ pub fn components_in_group(group: &str) -> Vec<&'static ComponentSpec> {
         .collect()
 }
 
-/// Searches components by name, display name, group, or keyword (literal, ReDoS-safe).
+/// Searches components by name, display name, group, or keyword (literal, ReDoS-safe, pre-indexed).
 pub fn search_components(query: &str) -> Vec<&'static ComponentSpec> {
     let q = query.trim().to_ascii_lowercase();
+    let specs = all_component_specs();
     if q.is_empty() {
-        return all_component_specs().iter().collect();
+        return specs.iter().collect();
     }
-    all_component_specs()
+    SEARCH_INDEX
         .iter()
-        .filter(|c| {
-            c.name.to_ascii_lowercase().contains(&q)
-                || c.display_name.to_ascii_lowercase().contains(&q)
-                || c.group.to_ascii_lowercase().contains(&q)
-                || c.keywords
-                    .iter()
-                    .any(|kw| kw.to_ascii_lowercase().contains(&q))
-        })
+        .enumerate()
+        .filter(|(_, hay)| hay.contains(&q))
+        .filter_map(|(idx, _)| specs.get(idx))
         .collect()
 }

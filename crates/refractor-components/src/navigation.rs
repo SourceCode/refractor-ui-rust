@@ -73,7 +73,11 @@ impl PrismTabs {
 impl RenderOnce for PrismTabs {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
-        let mut row = optical_surface(&theme, SurfaceVariant::Well)
+        let active_fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(15, 23, 42));
+        let inactive_fg =
+            color_str_to_hsla(&theme.palette.text.secondary, RgbColor::new(71, 85, 105));
+        let mut row = optical_surface(&theme, SurfaceVariant::Crystal)
+            .rounded(px(9999.0))
             .flex()
             .flex_row()
             .items_center()
@@ -83,17 +87,25 @@ impl RenderOnce for PrismTabs {
         for (idx, tab) in self.tabs.into_iter().enumerate() {
             let active = idx == self.active_index;
             let item = if active {
-                optical_surface(&theme, SurfaceVariant::Crystal).text_color(color_str_to_hsla(
-                    &theme.palette.text.primary,
-                    RgbColor::new(21, 30, 44),
-                ))
+                optical_surface(&theme, SurfaceVariant::Well)
+                    .rounded(px(9999.0))
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .text_color(active_fg)
             } else {
-                div().text_color(color_str_to_hsla(
-                    &theme.palette.text.secondary,
-                    RgbColor::new(100, 116, 139),
-                ))
+                div()
+                    .rounded(px(9999.0))
+                    .font_weight(FontWeight::MEDIUM)
+                    .text_color(inactive_fg)
             };
-            row = row.child(item.px(px(14.0)).py(px(7.0)).text_size(px(13.0)).child(tab));
+            row = row.child(
+                item.flex()
+                    .items_center()
+                    .justify_center()
+                    .h(px(36.0))
+                    .px(px(16.0))
+                    .text_size(px(12.0))
+                    .child(tab),
+            );
         }
         row
     }
@@ -118,20 +130,33 @@ impl Breadcrumbs {
 impl RenderOnce for Breadcrumbs {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
-        let primary_fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(21, 30, 44));
-        let muted_fg = color_str_to_hsla(&theme.palette.text.secondary, RgbColor::new(100, 116, 139));
+        let primary_fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(15, 23, 42));
+        let muted_fg = color_str_to_hsla(&theme.palette.text.secondary, RgbColor::new(71, 85, 105));
+        let slash_fg = rgb_to_hsla(RgbColor::new(148, 163, 184), 1.0);
         let len = self.segments.len();
-        let mut row = div().flex().flex_row().items_center().gap(px(6.0));
+        let mut row = optical_surface(&theme, SurfaceVariant::Crystal)
+            .rounded(px(9999.0))
+            .px(px(16.0))
+            .py(px(8.0))
+            .flex()
+            .flex_row()
+            .items_center()
+            .gap(px(8.0));
         for (idx, seg) in self.segments.into_iter().enumerate() {
             let is_last = idx + 1 == len;
             row = row.child(
                 div()
-                    .text_size(px(13.0))
+                    .text_size(px(12.0))
+                    .font_weight(if is_last {
+                        FontWeight::SEMIBOLD
+                    } else {
+                        FontWeight::NORMAL
+                    })
                     .text_color(if is_last { primary_fg } else { muted_fg })
                     .child(seg),
             );
             if !is_last {
-                row = row.child(div().text_size(px(12.0)).text_color(muted_fg).child("/"));
+                row = row.child(div().text_size(px(12.0)).text_color(slash_fg).child("/"));
             }
         }
         row
@@ -159,48 +184,71 @@ impl Stepper {
 impl RenderOnce for Stepper {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
-        let mut row = div().flex().flex_row().items_center().gap(px(12.0));
+        let primary_fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(15, 23, 42));
+        let muted_fg = color_str_to_hsla(&theme.palette.text.secondary, RgbColor::new(71, 85, 105));
+        let total = self.steps.len();
+        let mut row = div()
+            .w_full()
+            .flex()
+            .flex_row()
+            .items_center()
+            .justify_between()
+            .gap(px(8.0));
         for (idx, step) in self.steps.into_iter().enumerate() {
-            let variant = match idx.cmp(&self.current) {
-                std::cmp::Ordering::Less => SurfaceVariant::Emerald,
-                std::cmp::Ordering::Equal => SurfaceVariant::PrimaryButton,
-                std::cmp::Ordering::Greater => SurfaceVariant::Well,
+            let completed = idx < self.current;
+            let is_current = idx == self.current;
+            let variant = if completed {
+                SurfaceVariant::Emerald
+            } else if is_current {
+                SurfaceVariant::PrimaryButton
+            } else {
+                SurfaceVariant::Crystal
+            };
+            let badge_fg = if completed || is_current {
+                rgb_to_hsla(RgbColor::new(255, 255, 255), 1.0)
+            } else {
+                muted_fg
+            };
+            let badge_txt = if completed {
+                "✓".to_owned()
+            } else {
+                format!("{}", idx + 1)
             };
             let badge = optical_surface(&theme, variant)
-                .w(px(26.0))
-                .h(px(26.0))
-                .rounded(px(999.0))
+                .w(px(36.0))
+                .h(px(36.0))
+                .rounded(px(9999.0))
                 .flex()
                 .items_center()
                 .justify_center()
                 .text_size(px(12.0))
-                .text_color(color_str_to_hsla(
-                    if idx <= self.current {
-                        &theme.palette.primary.contrast_text
-                    } else {
-                        &theme.palette.text.secondary
-                    },
-                    RgbColor::new(255, 255, 255),
-                ))
-                .child(format!("{}", idx + 1));
+                .font_weight(FontWeight::SEMIBOLD)
+                .text_color(badge_fg)
+                .child(badge_txt);
 
-            row = row.child(
-                div()
-                    .flex()
-                    .flex_row()
-                    .items_center()
-                    .gap(px(6.0))
-                    .child(badge)
-                    .child(
-                        div()
-                            .text_size(px(13.0))
-                            .text_color(color_str_to_hsla(
-                                &theme.palette.text.primary,
-                                RgbColor::new(21, 30, 44),
-                            ))
-                            .child(step),
-                    ),
-            );
+            let mut item = div()
+                .flex_1()
+                .flex()
+                .flex_row()
+                .items_center()
+                .gap(px(10.0))
+                .child(badge)
+                .child(
+                    div()
+                        .text_size(px(12.0))
+                        .font_weight(FontWeight::SEMIBOLD)
+                        .text_color(if is_current { primary_fg } else { muted_fg })
+                        .child(step),
+                );
+            if idx + 1 < total {
+                let line_col = if completed {
+                    rgb_to_hsla(RgbColor::new(16, 185, 129), 0.70)
+                } else {
+                    rgb_to_hsla(RgbColor::new(203, 213, 225), 0.70)
+                };
+                item = item.child(div().flex_1().h(px(2.0)).rounded(px(9999.0)).bg(line_col));
+            }
+            row = row.child(item);
         }
         row
     }
@@ -227,19 +275,63 @@ impl Pagination {
 impl RenderOnce for Pagination {
     fn render(self, _window: &mut Window, cx: &mut App) -> impl IntoElement {
         let theme = active_theme(cx);
-        let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(21, 30, 44));
-        optical_surface(&theme, SurfaceVariant::Crystal)
-            .px(px(14.0))
-            .py(px(8.0))
+        let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(51, 65, 85));
+        let white = rgb_to_hsla(RgbColor::new(255, 255, 255), 1.0);
+        let visible_total = self.total_pages.min(7);
+        let mut row = div().flex().flex_row().items_center().gap(px(6.0));
+
+        let mut prev = optical_surface(&theme, SurfaceVariant::Crystal)
+            .w(px(36.0))
+            .h(px(36.0))
+            .rounded(px(9999.0))
             .flex()
-            .flex_row()
             .items_center()
-            .gap(px(12.0))
-            .text_size(px(13.0))
+            .justify_center()
+            .text_size(px(14.0))
             .text_color(fg)
-            .child("‹ Prev")
-            .child(format!("Page {} of {}", self.page, self.total_pages))
-            .child("Next ›")
+            .child("‹");
+        if self.page <= 1 {
+            prev = prev.opacity(0.4);
+        }
+        row = row.child(prev);
+
+        for p in 1..=visible_total {
+            let active = p == self.page;
+            let btn = if active {
+                optical_surface(&theme, SurfaceVariant::PrimaryButton)
+                    .font_weight(FontWeight::SEMIBOLD)
+                    .text_color(white)
+            } else {
+                optical_surface(&theme, SurfaceVariant::Crystal)
+                    .font_weight(FontWeight::MEDIUM)
+                    .text_color(fg)
+            };
+            row = row.child(
+                btn.w(px(36.0))
+                    .h(px(36.0))
+                    .rounded(px(9999.0))
+                    .flex()
+                    .items_center()
+                    .justify_center()
+                    .text_size(px(12.0))
+                    .child(format!("{p}")),
+            );
+        }
+
+        let mut next = optical_surface(&theme, SurfaceVariant::Crystal)
+            .w(px(36.0))
+            .h(px(36.0))
+            .rounded(px(9999.0))
+            .flex()
+            .items_center()
+            .justify_center()
+            .text_size(px(14.0))
+            .text_color(fg)
+            .child("›");
+        if self.page >= self.total_pages {
+            next = next.opacity(0.4);
+        }
+        row.child(next)
     }
 }
 

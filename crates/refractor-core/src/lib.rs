@@ -11,6 +11,7 @@ pub mod fx_overlay;
 pub mod gpui_bridge;
 pub mod interaction;
 pub mod optical;
+pub mod shader;
 
 pub use app::{AppHost, RefractorApp, Subscription, Task, run_app};
 pub use astryx::{
@@ -28,6 +29,11 @@ pub use interaction::{
     FocusRingSpec, KeyAction, KeyboardEvent, roving_next_index, should_handle_key,
 };
 pub use optical::{SurfaceVariant, apply_component_override, optical_surface};
+pub use shader::{
+    BlurHostContext, DEFAULT_MAX_SHADER_DIMENSION_PX, HARD_MAX_SHADER_DIMENSION_PX, MAX_SHADER_DPR,
+    OpticalShaderKind, OpticalShaderRegistry, PointerCoalescer, ShaderBudget, ShaderUniforms,
+    TelemetryRingBuffer,
+};
 
 #[cfg(test)]
 mod tests {
@@ -70,8 +76,8 @@ mod tests {
     }
 
     #[test]
-    fn all_55_component_categories_have_non_empty_labels() {
-        assert_eq!(ComponentCategory::ALL.len(), 55);
+    fn all_58_component_categories_have_non_empty_labels() {
+        assert_eq!(ComponentCategory::ALL.len(), 58);
         for cat in ComponentCategory::ALL {
             assert_ne!(cat.label(), "");
         }

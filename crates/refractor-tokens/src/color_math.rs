@@ -1,7 +1,25 @@
 //! Pure deterministic sRGB/HSV color math and WCAG 2.2 AA contrast derivation.
 
+use std::sync::LazyLock;
+
 use refractor_security::clamp_f64;
 use serde::{Deserialize, Serialize};
+
+/// Precomputed 256-entry sRGB-to-linear luminance lookup table (eliminates hot-path `powf(2.4)`).
+static SRGB_LINEAR_LUT: LazyLock<[f64; 256]> = LazyLock::new(|| {
+    let mut table = [0.0_f64; 256];
+    let mut i = 0_usize;
+    while i < 256 {
+        let s = (i as f64) / 255.0;
+        table[i] = if s <= 0.03928 {
+            s / 12.92
+        } else {
+            ((s + 0.055) / 1.055).powf(2.4)
+        };
+        i += 1;
+    }
+    table
+});
 
 /// 8-bit sRGB color triplet.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -183,13 +201,9 @@ pub fn darken_hex(hex: &str, amount: f64) -> String {
     rgb_to_hex(mix_rgb(base, RgbColor::new(10, 14, 22), amount))
 }
 
+#[inline]
 fn linearize_channel(channel: u8) -> f64 {
-    let s = f64::from(channel) / 255.0;
-    if s <= 0.03928 {
-        s / 12.92
-    } else {
-        ((s + 0.055) / 1.055).powf(2.4)
-    }
+    SRGB_LINEAR_LUT[usize::from(channel)]
 }
 
 /// WCAG 2.2 relative luminance in `0.0..=1.0`.

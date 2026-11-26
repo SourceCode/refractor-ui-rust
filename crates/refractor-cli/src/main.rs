@@ -59,7 +59,7 @@ fn cmd_component(args: &[String]) -> ExitCode {
     let full = args.windows(2).any(|w| w[0] == "--detail" && w[1] == "full");
 
     let Some(spec) = find_component_spec(name) else {
-        eprintln!("Component '{name}' not found in the 314-component catalog.");
+        eprintln!("Component '{name}' not found in the 339-component catalog.");
         return ExitCode::FAILURE;
     };
 
@@ -198,7 +198,7 @@ fn cmd_swizzle(args: &[String]) -> ExitCode {
         .map_or("src/ui", |w| w[1].as_str());
 
     let Some(spec) = find_component_spec(name) else {
-        eprintln!("Refusing swizzle: '{name}' is not in the allowlisted 314-component catalog.");
+        eprintln!("Refusing swizzle: '{name}' is not in the allowlisted 339-component catalog.");
         return ExitCode::FAILURE;
     };
 
@@ -260,9 +260,9 @@ fn cmd_check(args: &[String]) -> ExitCode {
     let group_count = all_component_groups().len();
     let theme_count = all_themes().len();
 
-    let ok = comp_count == 314 && group_count == 55 && theme_count == 67;
+    let ok = comp_count == 339 && group_count == 58 && theme_count == 67;
     println!(
-        "Refractor check (strict={strict}): components={comp_count}/314, categories={group_count}/55, themes={theme_count}/67"
+        "Refractor check (strict={strict}): components={comp_count}/339, categories={group_count}/58, themes={theme_count}/67"
     );
     if ok {
         ExitCode::SUCCESS

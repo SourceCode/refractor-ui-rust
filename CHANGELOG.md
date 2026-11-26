@@ -5,6 +5,26 @@ All notable changes to **Refractor UI for Rust** (`refractor-ui-rust`) will be d
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-11-26
+
+### Added
+- **1:1 Parity with `refractor-ui` v1.48.0–v1.52.0 (339 Components Across 58 Categories):**
+  - **Dynamic Gradient & AI-Glow FX Suite (`suites::gradient_ai_glow_fx`, 8 components):** `PrismaticCursorHalo`, `AiFocusRing`, `FluidMeshCanvas`, `GradientTextSelection`, `AmbientAuraBleed`, `ReactiveInputShimmer`, `IridescentRimSurface`, and `StatefulEnergyRibbon`.
+  - **Shader & Optical FX Suite (`suites::shader_optical_fx`, 8 components):** `RefractiveLensContainer`, `ChromaticDispersionEdge`, `CausticLightLayer`, `FrostedGrainOverlay`, `LiquidRippleTrigger`, `HolographicFoilSheen`, `MetaballFluidBackdrop`, and `OpticalDepthVignette`.
+  - **Loaders, Skeletons & Data Transitions Suite (`suites::loaders_skeletons_transitions`, 9 components):** `RefractiveSkeleton`, `OrbitalRingSpinner`, `AiThinkingOrb`, `SegmentedGlassProgress`, `StreamingTokenReveal`, `DataGridRowShimmer`, `AcousticActivityBar`, `PipelinePulseLoader`, and `ScanlineRadarSweep`.
+- **Optical Shader & High-Performance Frame Engine (`refractor-core::shader`):**
+  - Added `OpticalShaderKind` (all 10 shader presets with native WGSL entry-point metadata), `ShaderBudget` (DPR cap `<= 1.5`, dimension clamping `<= 768px`, offscreen/window/reduced-motion/performance-mode guards), `ShaderUniforms`, leak-free `OpticalShaderRegistry`, 60fps `PointerCoalescer`, bounded `TelemetryRingBuffer<T, N>`, and `BlurHostContext` nested blur-elision helper.
+- **Three-Tier GPU Performance Profiles & Zero-Allocation Hot Paths (`refractor-tokens`, `refractor-themes`, `refractor-components`):**
+  - Added `ThemePerformanceMode` (`Balanced`, `High`, `Max`) integrated into `ThemeOptics`, `optical_surface`, `FxOverlaySpec`, and `ShaderBudget`.
+  - Added precomputed 256-entry `SRGB_LINEAR_LUT` in `refractor-tokens::color_math` eliminating hot-path `powf(2.4)` calls.
+  - Added O(1) `HashMap` lookup indices, pre-resolved theme caching (`RESOLVED_CACHE`), and precomputed lowercased search corpora (`search_themes`, `search_components`) in `refractor-themes` and `refractor-components::registry`.
+- **Visual Parity Harness & Expanded Adversarial/Performance Test Suite:**
+  - Added `apps/workbench/examples/parity_harness.rs` and expanded `crates/refractor-components/tests/app_validation.rs` with positive, negative, adversarial (`NaN`/`Infinity`/bounds), 10/10 shader disposal, 200x high-frequency pointer coalescing, and 10,000x sRGB LUT throughput benchmarks.
+
+### Changed
+- **GPU Blur Kernel Optimization & Optical Surface Fidelity (`refractor-tokens`, `refractor-themes`, `refractor-core`):** Lowered default optical blur radii (`18px -> 12px` glass/mica/resin, `14px -> 10px` chrome, `22px -> 14px` slabs) and refined concentric SDF optical surfaces and flagship component styling (`buttons`, `inputs`, `display`, `feedback`, `navigation`, `suites`).
+- **Synchronized Tooling, Apps & Documentation:** Updated `refractor-cli`, `refractor-xtask`, `apps/workbench`, `apps/studio-showcase`, `README.md`, `AGENTS.md`, and `docs/index.html` to 339 components across 58 categories and 67 themes.
+
 ## [1.0.1] - 2026-11-24
 
 ### Changed

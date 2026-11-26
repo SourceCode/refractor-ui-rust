@@ -16,6 +16,6 @@ pub use types::{
     ComponentStyleOverride, DefinePrismThemeInput, DefinedPrismTheme, PaletteColorInput,
     PrismTheme, PrismThemeOptions, RefractionIntensity, ThemeBackground, ThemeCollectionCategory,
     ThemeControlsLayout, ThemeEditorColors, ThemeFxConfig, ThemeMaterial, ThemeMode,
-    ThemeMotionConfig, ThemeOptics, ThemeOverlayFx, ThemePalette, ThemeShape, ThemeTextColors,
-    ThemeTokenValue, ThemeTypography, TypographyScale,
+    ThemeMotionConfig, ThemeOptics, ThemeOverlayFx, ThemePalette, ThemePerformanceMode, ThemeShape,
+    ThemeTextColors, ThemeTokenValue, ThemeTypography, TypographyScale,
 };

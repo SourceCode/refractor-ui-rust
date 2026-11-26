@@ -4283,7 +4283,7 @@ dependencies = [
 
 [[package]]
 name = "refractor-cli"
-version = "1.0.1"
+version = "1.1.0"
 dependencies = [
  "refractor-components",
  "refractor-security",
@@ -4293,7 +4293,7 @@ dependencies = [
 
 [[package]]
 name = "refractor-components"
-version = "1.0.1"
+version = "1.1.0"
 dependencies = [
  "gpui",
  "refractor-core",
@@ -4306,7 +4306,7 @@ dependencies = [
 
 [[package]]
 name = "refractor-core"
-version = "1.0.1"
+version = "1.1.0"
 dependencies = [
  "gpui",
  "refractor-security",
@@ -4317,11 +4317,11 @@ dependencies = [
 
 [[package]]
 name = "refractor-security"
-version = "1.0.1"
+version = "1.1.0"
 
 [[package]]
 name = "refractor-studio-showcase"
-version = "1.0.1"
+version = "1.1.0"
 dependencies = [
  "gpui",
  "refractor-components",
@@ -4332,7 +4332,7 @@ dependencies = [
 
 [[package]]
 name = "refractor-task-manager"
-version = "1.0.1"
+version = "1.1.0"
 dependencies = [
  "gpui",
  "refractor-components",
@@ -4344,7 +4344,7 @@ dependencies = [
 
 [[package]]
 name = "refractor-themes"
-version = "1.0.1"
+version = "1.1.0"
 dependencies = [
  "refractor-tokens",
  "serde",
@@ -4353,7 +4353,7 @@ dependencies = [
 
 [[package]]
 name = "refractor-tokens"
-version = "1.0.1"
+version = "1.1.0"
 dependencies = [
  "refractor-security",
  "serde",
@@ -4361,7 +4361,7 @@ dependencies = [
 
 [[package]]
 name = "refractor-workbench"
-version = "1.0.1"
+version = "1.1.0"
 dependencies = [
  "gpui",
  "refractor-components",
@@ -4372,7 +4372,7 @@ dependencies = [
 
 [[package]]
 name = "refractor-xtask"
-version = "1.0.1"
+version = "1.1.0"
 dependencies = [
  "refractor-components",
  "refractor-themes",

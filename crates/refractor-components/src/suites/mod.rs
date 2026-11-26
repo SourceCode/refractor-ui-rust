@@ -1,7 +1,7 @@
 //! Bespoke native Rust/GPUI domain suites replacing all 274 former catalog shells.
 //!
 //! Together with the 40 flagship components in `buttons`, `inputs`, `navigation`, `display`,
-//! `feedback`, and `desktop`, all **314 components across all 55 categories** are bespoke
+//! `feedback`, and `desktop`, all **339 components across all 58 categories** are bespoke
 //! native GPUI `RenderOnce` implementations.
 
 pub mod ai_cli_observability;
@@ -10,11 +10,14 @@ pub mod core_utilities_hardware;
 pub mod desktop_os_files;
 pub mod enterprise_data_commerce;
 pub mod forms_inputs;
+pub mod gradient_ai_glow_fx;
+pub mod loaders_skeletons_transitions;
 pub mod pro_media_audio;
+pub mod shader_optical_fx;
 
 use gpui::{
-    AnyElement, Bounds, Div, IntoElement, ParentElement, Pixels, SharedString, Styled, canvas, div,
-    fill, point, px, size,
+    AnyElement, Bounds, Div, FontWeight, IntoElement, ParentElement, Pixels, SharedString, Styled,
+    canvas, div, fill, point, px, relative, size,
 };
 use refractor_core::{SurfaceVariant, color_str_to_hsla, optical_surface, rgb_to_hsla};
 use refractor_security::clamp_f32;
@@ -26,7 +29,7 @@ pub(crate) fn suite_header(
     title: impl Into<SharedString>,
     badge: Option<SharedString>,
 ) -> Div {
-    let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(21, 30, 44));
+    let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(15, 23, 42));
     let accent = color_str_to_hsla(&theme.palette.primary.main, theme.palette.primary.rgb);
     let mut row = div()
         .flex()
@@ -34,13 +37,21 @@ pub(crate) fn suite_header(
         .items_center()
         .justify_between()
         .gap(px(8.0))
-        .child(div().text_size(px(13.0)).text_color(fg).child(title.into()));
+        .child(
+            div()
+                .text_size(px(14.0))
+                .font_weight(FontWeight::SEMIBOLD)
+                .text_color(fg)
+                .child(title.into()),
+        );
     if let Some(b) = badge {
         row = row.child(
-            optical_surface(theme, SurfaceVariant::Badge)
-                .px(px(8.0))
-                .py(px(2.0))
-                .text_size(px(10.0))
+            optical_surface(theme, SurfaceVariant::Crystal)
+                .rounded(px(9999.0))
+                .px(px(10.0))
+                .py(px(3.0))
+                .text_size(px(11.0))
+                .font_weight(FontWeight::SEMIBOLD)
                 .text_color(accent)
                 .child(b),
         );
@@ -327,29 +338,23 @@ pub(crate) fn gpu_tracks_canvas(
 /// Renders a GPU-accelerated horizontal meter / gauge / VU / token bar.
 pub(crate) fn gpu_meter(theme: &PrismTheme, fraction: f32, use_success: bool) -> AnyElement {
     let pct = clamp_f32(fraction, 0.0, 1.0, 0.0);
-    let fill_color = if use_success {
-        rgb_to_hsla(theme.palette.success.rgb, 0.94)
+    let fill_variant = if use_success {
+        SurfaceVariant::Emerald
     } else {
-        rgb_to_hsla(theme.palette.primary.rgb, 0.94)
+        SurfaceVariant::PrimaryButton
     };
-    optical_surface(theme, SurfaceVariant::Well)
+    optical_surface(theme, SurfaceVariant::Crystal)
         .w_full()
-        .h(px(12.0))
-        .rounded(px(999.0))
+        .h(px(14.0))
+        .rounded(px(9999.0))
         .p(px(2.0))
+        .overflow_hidden()
         .child(
-            canvas(
-                |_b, _w, _cx| {},
-                move |bounds: Bounds<Pixels>, (), window, _cx| {
-                    let w: f32 = bounds.size.width.into();
-                    let fill_w = (w * pct).max(2.0);
-                    window.paint_quad(fill(
-                        Bounds::new(bounds.origin, size(px(fill_w), bounds.size.height)),
-                        fill_color,
-                    ));
-                },
-            )
-            .size_full(),
+            optical_surface(theme, fill_variant)
+                .border_0()
+                .w(relative(pct))
+                .h_full()
+                .rounded(px(9999.0)),
         )
         .into_any_element()
 }
@@ -381,7 +386,7 @@ pub(crate) fn pill_strip(
     items: Vec<SharedString>,
     active_index: Option<usize>,
 ) -> Div {
-    let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(21, 30, 44));
+    let fg = color_str_to_hsla(&theme.palette.text.primary, RgbColor::new(24, 32, 44));
     let active_fg = color_str_to_hsla(
         &theme.palette.primary.contrast_text,
         RgbColor::new(255, 255, 255),
@@ -390,11 +395,21 @@ pub(crate) fn pill_strip(
     for (idx, item) in items.into_iter().enumerate() {
         let is_active = active_index == Some(idx);
         let pill = if is_active {
-            optical_surface(theme, SurfaceVariant::PrimaryButton).text_color(active_fg)
+            optical_surface(theme, SurfaceVariant::PrimaryButton)
+                .font_weight(FontWeight::SEMIBOLD)
+                .text_color(active_fg)
         } else {
-            optical_surface(theme, SurfaceVariant::Well).text_color(fg)
+            optical_surface(theme, SurfaceVariant::Crystal)
+                .font_weight(FontWeight::MEDIUM)
+                .text_color(fg)
         };
-        row = row.child(pill.px(px(10.0)).py(px(4.0)).text_size(px(11.0)).child(item));
+        row = row.child(
+            pill.rounded(px(9999.0))
+                .px(px(12.0))
+                .py(px(4.0))
+                .text_size(px(11.0))
+                .child(item),
+        );
     }
     row
 }

@@ -153,7 +153,7 @@ pub struct ComponentDoc {
     pub example: &'static str,
 }
 
-/// All 55 component categories from `glass-ui-v1` spanning all 314 components.
+/// All 58 component categories from `refractor-ui` v1.52.0 spanning all 339 components.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "kebab-case")]
 pub enum ComponentCategory {
@@ -212,11 +212,14 @@ pub enum ComponentCategory {
     SystemTrayControlCenter,
     HardwareHudsOverlays,
     DesktopSurfacesSystemDialogs,
+    GradientAiGlowFx,
+    ShaderOpticalFx,
+    LoadersSkeletonsTransitions,
 }
 
 impl ComponentCategory {
-    /// All 55 categories in canonical catalog order.
-    pub const ALL: [Self; 55] = [
+    /// All 58 categories in canonical catalog order.
+    pub const ALL: [Self; 58] = [
         Self::ButtonsActions,
         Self::FormInputsSelection,
         Self::Navigation,
@@ -272,6 +275,9 @@ impl ComponentCategory {
         Self::SystemTrayControlCenter,
         Self::HardwareHudsOverlays,
         Self::DesktopSurfacesSystemDialogs,
+        Self::GradientAiGlowFx,
+        Self::ShaderOpticalFx,
+        Self::LoadersSkeletonsTransitions,
     ];
 
     pub const fn label(self) -> &'static str {
@@ -331,6 +337,9 @@ impl ComponentCategory {
             Self::SystemTrayControlCenter => "System Tray & Control Center",
             Self::HardwareHudsOverlays => "Hardware HUDs & System Overlays",
             Self::DesktopSurfacesSystemDialogs => "Desktop Surfaces & Native System Dialogs",
+            Self::GradientAiGlowFx => "Dynamic Gradient & AI-Glow FX",
+            Self::ShaderOpticalFx => "Shader & Optical FX",
+            Self::LoadersSkeletonsTransitions => "Loaders, Skeletons & Data Transitions",
         }
     }
 }

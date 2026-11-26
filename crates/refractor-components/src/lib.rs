@@ -1,4 +1,4 @@
-//! Complete 314-component catalog across 55 categories for **Refractor UI for Rust**.
+//! Complete 339-component catalog across 58 categories for **Refractor UI for Rust**.
 //!
 //! Powered by Zed's GPUI (`gpui`) and governed by Astryx Open-Internals (`ADR-0001`..`ADR-0006`).
 
@@ -49,17 +49,20 @@ pub use suites::core_utilities_hardware::*;
 pub use suites::desktop_os_files::*;
 pub use suites::enterprise_data_commerce::*;
 pub use suites::forms_inputs::*;
+pub use suites::gradient_ai_glow_fx::*;
+pub use suites::loaders_skeletons_transitions::*;
 pub use suites::pro_media_audio::*;
+pub use suites::shader_optical_fx::*;
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn registry_exposes_all_314_components_across_55_categories() {
+    fn registry_exposes_all_339_components_across_58_categories() {
         let specs = all_component_specs();
-        assert_eq!(specs.len(), 314);
-        assert_eq!(all_component_groups().len(), 55);
+        assert_eq!(specs.len(), 339);
+        assert_eq!(all_component_groups().len(), 58);
     }
 
     #[test]

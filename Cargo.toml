@@ -14,7 +14,7 @@ members = [
 ]
 
 [workspace.package]
-version = "1.0.1"
+version = "1.1.0"
 edition = "2024"
 rust-version = "1.88"
 license = "Apache-2.0"
@@ -30,11 +30,11 @@ serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 toml = "0.8"
 
-refractor-security = { path = "crates/refractor-security", version = "1.0.1" }
-refractor-tokens = { path = "crates/refractor-tokens", version = "1.0.1" }
-refractor-themes = { path = "crates/refractor-themes", version = "1.0.1" }
-refractor-core = { path = "crates/refractor-core", version = "1.0.1" }
-refractor-components = { path = "crates/refractor-components", version = "1.0.1" }
+refractor-security = { path = "crates/refractor-security", version = "1.1.0" }
+refractor-tokens = { path = "crates/refractor-tokens", version = "1.1.0" }
+refractor-themes = { path = "crates/refractor-themes", version = "1.1.0" }
+refractor-core = { path = "crates/refractor-core", version = "1.1.0" }
+refractor-components = { path = "crates/refractor-components", version = "1.1.0" }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

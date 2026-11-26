@@ -37,6 +37,14 @@ pub struct FxOverlaySpec {
 impl FxOverlaySpec {
     /// Derives safe overlay paint parameters from a [`PrismTheme`] and reduced-motion flag.
     pub fn from_theme(theme: &PrismTheme, reduced_motion: bool) -> Self {
+        if !theme.optics.performance_mode.allows_fx_overlays() {
+            return Self {
+                overlay: ThemeOverlayFx::None,
+                opacity: 0.0,
+                step_px: 0.0,
+                active: false,
+            };
+        }
         let overlay = theme.fx.wallpaper_overlay;
         let raw = if overlay == ThemeOverlayFx::None {
             0.0
